@@ -22,19 +22,19 @@ const CONFIG = {
     server1: {
         name: 'Server 1 - Mars',
         getMovieUrl: function(tmdbId) {
-            return `https://vidsync.pro/embed/movie/${tmdbId}`;
-        },
-        getTVUrl: function(tmdbId, season, episode) {
-            return `https://vidsync.pro/embed/tv/${tmdbId}/${season}/${episode}`;
-        }
-    },
-    server2: {
-        name: 'Server 2 - Earth [Multi Lang]',
-        getMovieUrl: function(tmdbId) {
             return `https://vidrock.net/movie/${tmdbId}`;
         },
         getTVUrl: function(tmdbId, season, episode) {
             return `https://vidrock.net/tv/${tmdbId}&s=${season}&e=${episode}`;
+        }
+    },
+    server2: {
+        name: 'Server 2 - Earth',
+        getMovieUrl: function(tmdbId) {
+            return `https://player.vidzee.wtf/embed/movie/${tmdb_id}`;
+        },
+        getTVUrl: function(tmdbId, season, episode) {
+            return `https://player.vidzee.wtf/embed/tv/${tmdb_id}$s=${season}e=${episode}`;
         }
     }
 },
