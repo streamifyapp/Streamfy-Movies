@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamify — Sign In</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red:      #e50914;
+            --red-glow: rgba(229,9,20,0.35);
+            --bg:       #070709;
+            --border:   rgba(255,255,255,0.08);
+            --text:     #ffffff;
+            --muted:    rgba(255,255,255,0.45);
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+        }
+        html, body { height:100%; font-family:var(--font-body); background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+        body { display:flex; flex-direction:column; min-height:100vh; padding-bottom:80px; }
+
+        /* ── BG ── */
+        .bg-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; }
+        .bg-base { width:100%; height:100%; background: radial-gradient(ellipse 80% 60% at 0% 0%,rgba(229,9,20,0.09) 0%,transparent 55%), radial-gradient(ellipse 60% 80% at 100% 100%,rgba(229,9,20,0.06) 0%,transparent 55%), radial-gradient(ellipse 100% 100% at 50% 50%,#0d0005 0%,#070709 60%); animation:bgDrift 18s ease-in-out infinite alternate; }
+        @keyframes bgDrift { 0%{background-position:0% 0%} 100%{background-position:100% 100%} }
+        .bg-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(229,9,20,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(229,9,20,0.025) 1px,transparent 1px); background-size:64px 64px; }
+        .bg-vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 30%,rgba(7,7,9,0.85) 100%); }
+        .particles { position:absolute; inset:0; overflow:hidden; }
+        .p { position:absolute; border-radius:50%; background:rgba(229,9,20,0.55); animation:pFloat linear infinite; }
+        .p:nth-child(1){left:5%;width:2px;height:2px;animation-duration:16s;animation-delay:0s}
+        .p:nth-child(2){left:18%;width:1px;height:1px;animation-duration:20s;animation-delay:3s}
+        .p:nth-child(3){left:30%;width:3px;height:3px;animation-duration:13s;animation-delay:5s}
+        .p:nth-child(4){left:42%;width:1px;height:1px;animation-duration:18s;animation-delay:1s}
+        .p:nth-child(5){left:55%;width:2px;height:2px;animation-duration:14s;animation-delay:4s}
+        .p:nth-child(6){left:68%;width:1px;height:1px;animation-duration:22s;animation-delay:6s}
+        .p:nth-child(7){left:78%;width:2px;height:2px;animation-duration:15s;animation-delay:2s}
+        .p:nth-child(8){left:88%;width:1px;height:1px;animation-duration:19s;animation-delay:7s}
+        .p:nth-child(9){left:95%;width:2px;height:2px;animation-duration:17s;animation-delay:3s}
+        @keyframes pFloat { 0%{transform:translateY(110vh) scale(0);opacity:0} 8%{opacity:1} 92%{opacity:0.7} 100%{transform:translateY(-60px) scale(1);opacity:0} }
+
+        /* ── NAVBAR ── */
+        .navbar { position:relative; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:22px 52px; background:linear-gradient(180deg,rgba(7,7,9,0.9) 0%,transparent 100%); }
+        .logo { font-family:var(--font-display); font-size:30px; letter-spacing:3px; color:var(--red); text-decoration:none; text-shadow:0 0 35px var(--red-glow); transition:text-shadow 0.3s; }
+        .logo:hover { text-shadow:0 0 55px rgba(229,9,20,0.8); }
+        .nav-help { font-size:13px; font-weight:500; color:var(--muted); text-decoration:none; transition:color 0.3s; }
+        .nav-help:hover { color:var(--text); }
+
+        /* ── MAIN / CARD ── */
+        .main { position:relative; z-index:10; flex:1; display:flex; align-items:center; justify-content:center; padding:20px 20px 60px; }
+        .card { width:100%; max-width:440px; background:rgba(5,5,8,0.88); backdrop-filter:blur(32px) saturate(160%); -webkit-backdrop-filter:blur(32px) saturate(160%); border:1px solid rgba(255,255,255,0.075); border-radius:20px; padding:44px 44px 38px; box-shadow:0 0 0 1px rgba(229,9,20,0.03),0 32px 80px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.04); animation:cardIn 0.8s cubic-bezier(0.16,1,0.3,1) both; position:relative; }
+        @keyframes cardIn { from{opacity:0;transform:translateY(36px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+        .card::before { content:''; position:absolute; inset:-1px; border-radius:21px; z-index:-1; background:linear-gradient(135deg,rgba(229,9,20,0.18),transparent 45%,rgba(229,9,20,0.09)); opacity:0; transition:opacity 0.5s; }
+        .card:hover::before { opacity:1; }
+
+        /* ── TABS ── */
+        .tabs { display:flex; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:34px; }
+        .tab { flex:1; padding:11px 0; border:none; background:transparent; color:var(--muted); font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; border-radius:9px; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .tab.on { background:var(--red); color:#fff; box-shadow:0 4px 22px rgba(229,9,20,0.4); }
+        .tab:not(.on):hover { color:#fff; background:rgba(255,255,255,0.05); }
+
+        .fh { margin-bottom:28px; }
+        .fh h1 { font-size:24px; font-weight:800; letter-spacing:-0.4px; margin-bottom:5px; }
+        .fh p  { font-size:14px; color:var(--muted); line-height:1.5; }
+
+        .panel { display:none; flex-direction:column; gap:15px; }
+        .panel.on { display:flex; animation:panelIn 0.35s ease; }
+        @keyframes panelIn { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
+
+        /* ── INPUTS ── */
+        .ig { position:relative; }
+        .ig label { display:block; font-size:10.5px; font-weight:700; color:rgba(255,255,255,0.38); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:7px; }
+        .iw { position:relative; display:flex; align-items:center; }
+        .iw .ico { position:absolute; left:14px; z-index:2; color:rgba(255,255,255,0.22); font-size:13px; pointer-events:none; transition:color 0.25s; }
+        .ig:focus-within .ico { color:var(--red); }
+        .iw input { width:100%; padding:13px 14px 13px 42px; background:rgba(255,255,255,0.045); border:1.5px solid rgba(255,255,255,0.08); border-radius:11px; color:var(--text); font-family:var(--font-body); font-size:14px; font-weight:500; outline:none; transition:all 0.25s ease; }
+        .iw input::placeholder { color:rgba(255,255,255,0.18); font-weight:400; }
+        .iw input:focus { background:rgba(229,9,20,0.05); border-color:var(--red); box-shadow:0 0 0 3px rgba(229,9,20,0.1); }
+        .iw input.err { border-color:rgba(229,9,20,0.55); background:rgba(229,9,20,0.04); }
+        .iw input.ok  { border-color:rgba(39,174,96,0.45); }
+        .eye { position:absolute; right:13px; z-index:2; background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.22); font-size:13px; padding:4px; transition:color 0.25s; }
+        .eye:hover { color:rgba(255,255,255,0.6); }
+
+        /* password strength */
+        .strength { margin-top:8px; display:none; }
+        .s-bars { display:flex; gap:4px; margin-bottom:5px; }
+        .s-bar { flex:1; height:3px; background:rgba(255,255,255,0.07); border-radius:99px; transition:background 0.4s; }
+        .s-label { font-size:11px; font-weight:600; }
+
+        .opts { display:flex; align-items:center; justify-content:space-between; }
+        .remember { display:flex; align-items:center; gap:7px; cursor:pointer; }
+        .remember input { accent-color:var(--red); width:14px; height:14px; cursor:pointer; }
+        .remember span  { font-size:13px; color:var(--muted); }
+        .forgot { font-size:13px; color:var(--muted); cursor:pointer; transition:color 0.25s; background:none; border:none; }
+        .forgot:hover { color:#fff; text-decoration:underline; }
+
+        /* ── SUBMIT ── */
+        .submit { width:100%; padding:14px; background:linear-gradient(135deg,#e50914,#c1000e); border:none; border-radius:11px; color:#fff; font-family:var(--font-body); font-size:15px; font-weight:700; cursor:pointer; position:relative; overflow:hidden; margin-top:2px; box-shadow:0 4px 20px rgba(229,9,20,0.28); transition:all 0.28s ease; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .submit::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.11),transparent); transition:left 0.55s; }
+        .submit:hover::before { left:100%; }
+        .submit:hover { background:linear-gradient(135deg,#f50a15,#d1000f); box-shadow:0 8px 32px rgba(229,9,20,0.5); transform:translateY(-1px); }
+        .submit:active { transform:translateY(0); }
+        .submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; pointer-events:none; }
+        .spin-sm { width:17px; height:17px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spinSm 0.75s linear infinite; display:none; flex-shrink:0; }
+        @keyframes spinSm { to{transform:rotate(360deg)} }
+        .submit.loading .spin-sm { display:block; }
+        .submit.loading .lbl { opacity:0.7; }
+
+        /* ── ALERTS ── */
+        .alert { padding:11px 14px; border-radius:9px; font-size:13px; font-weight:500; line-height:1.5; display:flex; align-items:flex-start; gap:9px; animation:alertIn 0.3s ease; }
+        @keyframes alertIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+        .alert i { flex-shrink:0; margin-top:1px; }
+        .alert-err  { background:rgba(229,9,20,0.09);  border:1px solid rgba(229,9,20,0.22);  color:#ff8080; }
+        .alert-ok   { background:rgba(39,174,96,0.09); border:1px solid rgba(39,174,96,0.22); color:#6bcb77; }
+
+        .switch { text-align:center; font-size:13px; color:var(--muted); }
+        .switch a { color:#fff; font-weight:700; text-decoration:none; cursor:pointer; transition:color 0.25s; }
+        .switch a:hover { color:var(--red); }
+        .terms { font-size:12px; color:rgba(255,255,255,0.22); text-align:center; line-height:1.7; }
+        .terms a { color:rgba(255,255,255,0.4); text-decoration:underline; }
+        .terms a:hover { color:#fff; }
+
+        .footer { position:relative; z-index:10; text-align:center; padding:16px; color:rgba(255,255,255,0.18); font-size:12px; }
+
+        /* ── FORGOT MODAL ── */
+        .modal-wrap { position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(10px); z-index:9000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+        .modal-wrap.open { opacity:1; pointer-events:all; }
+        .modal-box { background:rgba(8,8,12,0.98); border:1px solid rgba(255,255,255,0.09); border-radius:18px; padding:38px 34px; width:100%; max-width:390px; box-shadow:0 30px 80px rgba(0,0,0,0.85); transform:scale(0.91) translateY(18px); transition:all 0.38s cubic-bezier(0.16,1,0.3,1); }
+        .modal-wrap.open .modal-box { transform:scale(1) translateY(0); }
+        .modal-title { font-size:21px; font-weight:800; margin-bottom:6px; }
+        .modal-sub   { font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+        .modal-btns  { display:flex; gap:10px; margin-top:16px; }
+        .mbtn-cancel { flex:1; padding:13px; background:rgba(255,255,255,0.05); border:1.5px solid var(--border); border-radius:11px; color:var(--muted); font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; transition:all 0.25s; }
+        .mbtn-cancel:hover { color:#fff; background:rgba(255,255,255,0.08); }
+        .mbtn-send { flex:1; padding:13px; background:var(--red); border:none; border-radius:11px; color:#fff; font-family:var(--font-body); font-size:14px; font-weight:700; cursor:pointer; transition:all 0.25s; }
+        .mbtn-send:hover { background:#f40612; box-shadow:0 5px 22px rgba(229,9,20,0.4); }
+        .mbtn-send:disabled { opacity:0.55; cursor:not-allowed; }
+
+        /* ── USERNAME SETUP MODAL ── */
+        .umodal-wrap { position:fixed; inset:0; background:rgba(0,0,0,0.92); backdrop-filter:blur(16px); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
+        .umodal-wrap.open { display:flex; }
+        .umodal-box { background:#1a1a2e; border:1px solid rgba(224,64,251,0.25); border-radius:20px; padding:32px 28px; width:100%; max-width:400px; box-shadow:0 30px 80px rgba(0,0,0,0.9); animation:cardIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+        .umodal-icon { width:80px; height:80px; border-radius:40px; background:rgba(224,64,251,0.15); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:32px; }
+        .umodal-title { font-size:24px; font-weight:800; text-align:center; margin-bottom:8px; }
+        .umodal-sub { font-size:14px; color:var(--muted); text-align:center; line-height:1.6; margin-bottom:28px; }
+        .umodal-input { width:100%; padding:13px 14px; background:rgba(255,255,255,0.045); border:1.5px solid rgba(255,255,255,0.12); border-radius:11px; color:var(--text); font-family:var(--font-body); font-size:14px; font-weight:500; outline:none; transition:all 0.25s ease; }
+        .umodal-input:focus { border-color:#e040fb; box-shadow:0 0 0 3px rgba(224,64,251,0.15); background:rgba(224,64,251,0.04); }
+        .umodal-input.err { border-color:rgba(255,82,82,0.6); }
+        .umodal-meta { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.4); margin-top:6px; margin-bottom:4px; }
+        .umodal-err { background:rgba(255,82,82,0.1); border:1px solid rgba(255,82,82,0.25); border-radius:8px; padding:10px; font-size:12px; color:#ff5252; margin-top:12px; }
+        .umodal-btn { width:100%; padding:15px; background:#e040fb; border:none; border-radius:12px; color:#fff; font-family:var(--font-body); font-size:15px; font-weight:700; cursor:pointer; margin-top:24px; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.25s; }
+        .umodal-btn:hover:not(:disabled) { background:#cc30e0; box-shadow:0 6px 24px rgba(224,64,251,0.4); transform:translateY(-1px); }
+        .umodal-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .umodal-hint { text-align:center; font-size:11px; color:rgba(255,255,255,0.3); margin-top:12px; }
+
+        /* ── REDIRECT SCREEN ── */
+        .redirect-screen { display:none; flex-direction:column; align-items:center; text-align:center; gap:14px; padding:10px 0; animation:panelIn 0.5s ease; }
+        .redirect-icon { width:70px; height:70px; border-radius:50%; background:rgba(39,174,96,0.1); border:2px solid rgba(39,174,96,0.3); display:flex; align-items:center; justify-content:center; font-size:26px; color:#6bcb77; animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1); }
+        @keyframes popIn { from{transform:scale(0) rotate(-12deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+        .redirect-title { font-size:22px; font-weight:800; }
+        .redirect-sub   { font-size:14px; color:var(--muted); line-height:1.6; }
+        .redirect-dots  { display:flex; gap:6px; }
+        .redirect-dots span { width:7px; height:7px; border-radius:50%; background:var(--red); animation:dotBounce 1.2s ease infinite; }
+        .redirect-dots span:nth-child(2){animation-delay:0.15s}
+        .redirect-dots span:nth-child(3){animation-delay:0.3s}
+        @keyframes dotBounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+
+        @media (max-width:500px) { .navbar{padding:16px 22px} .card{padding:30px 22px 26px} .logo{font-size:26px} }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:9000; height:70px; display:flex; align-items:stretch; background:rgba(10,10,15,0.82); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%); border-top:1px solid rgba(255,255,255,0.07); box-shadow:0 -4px 30px rgba(0,0,0,0.6),0 -1px 0 rgba(229,9,20,0.15) inset; padding-bottom:env(safe-area-inset-bottom,0px); transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .bottom-nav::before { content:''; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(229,9,20,0.5) 30%,rgba(255,107,107,0.6) 50%,rgba(229,9,20,0.5) 70%,transparent); filter:blur(0.5px); }
+        .bottom-nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; text-decoration:none; color:rgba(255,255,255,0.45); font-size:10px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; background:none; border:none; padding:0; transition:color 0.25s ease; position:relative; -webkit-tap-highlight-color:transparent; }
+        .bottom-nav-item:hover{color:rgba(255,255,255,0.75)} .bottom-nav-item.active{color:#fff}
+        .bnav-icon-wrap { position:relative; width:44px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:14px; transition:background 0.3s ease,transform 0.2s ease; }
+        .bottom-nav-item.active .bnav-icon-wrap{background:rgba(229,9,20,0.18);transform:translateY(-1px)}
+        .bottom-nav-item:active .bnav-icon-wrap{transform:scale(0.88) translateY(-1px)}
+        .bnav-icon-wrap i{font-size:18px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),color 0.25s ease}
+        .bottom-nav-item.active .bnav-icon-wrap i{color:#e50914;filter:drop-shadow(0 0 8px rgba(229,9,20,0.7));transform:scale(1.15)}
+        .bnav-label{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;transition:color 0.25s ease,opacity 0.25s ease;opacity:0.7}
+        .bottom-nav-item.active .bnav-label{opacity:1;color:#fff}
+        .bnav-dot{position:absolute;top:-8px;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,#e50914,#ff6b6b);box-shadow:0 2px 8px rgba(229,9,20,0.6);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+        .bottom-nav-item.active .bnav-dot{transform:translateX(-50%) scaleX(1)}
+        .bnav-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);transition:border-color 0.25s ease,transform 0.25s ease}
+        .bottom-nav-item.active .bnav-avatar{border-color:#e50914;box-shadow:0 0 10px rgba(229,9,20,0.5);transform:scale(1.08) translateY(-1px)}
+        .bnav-ripple{position:absolute;border-radius:50%;background:rgba(229,9,20,0.25);transform:scale(0);animation:bnavRipple 0.5s ease-out forwards;pointer-events:none}
+        @keyframes bnavRipple{to{transform:scale(3.5);opacity:0}}
+    </style>
+
+<!-- Streamify automatic version check + cache busting -->
+<script src="version-check.js"></script>
+</head>
+<body>
+
+<div class="bg-wrap">
+    <div class="bg-base"></div><div class="bg-grid"></div><div class="bg-vignette"></div>
+    <div class="particles"><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div></div>
+</div>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">STREAMIFY</a>
+    <a href="#" class="nav-help">Need help?</a>
+</nav>
+
+<div class="main">
+    <div class="card">
+
+        <div class="tabs">
+            <button class="tab on" id="tabLogin"  onclick="goTab('login')">Sign In</button>
+            <button class="tab"    id="tabSignup" onclick="goTab('signup')">Create Account</button>
+        </div>
+
+        <!-- ══════════ LOGIN PANEL ══════════ -->
+        <div class="panel on" id="panelLogin">
+            <div class="fh"><h1>Welcome back 👋</h1><p>Sign in to your Streamify account</p></div>
+            <div id="loginAlert"></div>
+            <div class="ig">
+                <label>Email Address</label>
+                <div class="iw"><i class="fas fa-envelope ico"></i><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"></div>
+            </div>
+            <div class="ig">
+                <label>Password</label>
+                <div class="iw"><i class="fas fa-lock ico"></i><input type="password" id="loginPwd" placeholder="Enter password" autocomplete="current-password"><button class="eye" onclick="toggleEye('loginPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
+            </div>
+            <div class="opts">
+                <label class="remember"><input type="checkbox" id="remember"><span>Remember me</span></label>
+                <button class="forgot" onclick="openForgot()">Forgot password?</button>
+            </div>
+            <button class="submit" id="loginBtn" onclick="doLogin()"><div class="spin-sm"></div><span class="lbl">Sign In</span></button>
+            <div class="switch">New here? <a onclick="goTab('signup')">Create an account</a></div>
+        </div>
+
+        <!-- ══════════ SIGNUP PANEL ══════════ -->
+        <div class="panel" id="panelSignup">
+            <!-- Success screen shown after Auth account created -->
+            <div class="redirect-screen" id="redirectScreen">
+                <div class="redirect-icon"><i class="fas fa-check"></i></div>
+                <div class="redirect-title">Account Created!</div>
+                <div class="redirect-sub">Setting up your profile…</div>
+                <div class="redirect-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div id="signupFields">
+                <div class="fh"><h1>Join Streamify 🚀</h1><p>Create your free account in seconds</p></div>
+                <div id="signupAlert" style="margin-bottom:4px;"></div>
+                <div style="display:flex;flex-direction:column;gap:15px;">
+                    <div class="ig">
+                        <label>Email Address</label>
+                        <div class="iw"><i class="fas fa-envelope ico"></i><input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"></div>
+                    </div>
+                    <div class="ig">
+                        <label>Password</label>
+                        <div class="iw"><i class="fas fa-lock ico"></i><input type="password" id="signupPwd" placeholder="Min. 6 chars + 1 number" oninput="checkStr(this.value)"><button class="eye" onclick="toggleEye('signupPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
+                        <div class="strength" id="strMeter">
+                            <div class="s-bars"><div class="s-bar" id="sb1"></div><div class="s-bar" id="sb2"></div><div class="s-bar" id="sb3"></div><div class="s-bar" id="sb4"></div></div>
+                            <span class="s-label" id="strLabel"></span>
+                        </div>
+                    </div>
+                    <div class="ig">
+                        <label>Confirm Password</label>
+                        <div class="iw"><i class="fas fa-shield-alt ico"></i><input type="password" id="confirmPwd" placeholder="Re-enter password"><button class="eye" onclick="toggleEye('confirmPwd',this)" type="button"><i class="fas fa-eye"></i></button></div>
+                    </div>
+                    <button class="submit" id="signupBtn" onclick="doSignup()"><div class="spin-sm"></div><span class="lbl">Create Account</span></button>
+                    <p class="terms">By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></p>
+                    <div class="switch">Already have an account? <a onclick="goTab('login')">Sign in</a></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="footer">© 2025 Streamify · All rights reserved</footer>
+
+<!-- ══════════ FORGOT PASSWORD MODAL ══════════ -->
+<div class="modal-wrap" id="forgotModal" onclick="backdropClose(event)">
+    <div class="modal-box">
+        <div class="modal-title">Reset Password</div>
+        <div class="modal-sub">Enter your email and we'll send you a reset link.</div>
+        <div id="forgotAlert" style="margin-bottom:12px;"></div>
+        <div class="ig"><label>Email Address</label><div class="iw"><i class="fas fa-envelope ico"></i><input type="email" id="forgotEmail" placeholder="your@email.com"></div></div>
+        <div class="modal-btns">
+            <button class="mbtn-cancel" onclick="closeForgot()">Cancel</button>
+            <button class="mbtn-send" id="forgotSendBtn" onclick="doForgot()">Send Link</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ USERNAME SETUP MODAL ══════════ -->
+<div class="umodal-wrap" id="usernameModal">
+    <div class="umodal-box">
+        <div class="umodal-icon">👋</div>
+        <div class="umodal-title">Welcome!</div>
+        <div class="umodal-sub">Please create a unique username<br>for your account</div>
+        <input
+            class="umodal-input"
+            id="usernameInput"
+            type="text"
+            maxlength="20"
+            placeholder="e.g., movie_lover_123"
+            oninput="onUsernameType(this)"
+        >
+        <div class="umodal-meta">
+            <span>Must start with a letter · letters, numbers, _ only</span>
+            <span id="uCharCount">0/20</span>
+        </div>
+        <div class="umodal-err" id="usernameErr" style="display:none;"></div>
+        <button class="umodal-btn" id="usernameBtn" onclick="saveUsername()" disabled>
+            <div class="spin-sm" id="uSpin"></div>
+            <span id="uBtnLabel">Continue</span>
+        </button>
+        <div class="umodal-hint">You can change this later in settings</div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+    <a href="index.html" class="bottom-nav-item"><div class="bnav-dot"></div><div class="bnav-icon-wrap"><i class="fas fa-house"></i></div><span class="bnav-label">Home</span></a>
+    <a href="index.html#search" class="bottom-nav-item"><div class="bnav-dot"></div><div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div><span class="bnav-label">Search</span></a>
+    <a href="mylist.html" class="bottom-nav-item"><div class="bnav-dot"></div><div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div><span class="bnav-label">My List</span></a>
+    <a href="login.html" class="bottom-nav-item active"><div class="bnav-dot"></div><div class="bnav-icon-wrap" style="width:auto;background:transparent !important;"><img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile" class="bnav-avatar"></div><span class="bnav-label">Profile</span></a>
+</nav>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════
+   FIREBASE INIT
+════════════════════════════════════════════════════ */
+const firebaseConfig = {
+    apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+    authDomain:        "moddy-store.firebaseapp.com",
+    databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
+    projectId:         "moddy-store",
+    storageBucket:     "moddy-store.appspot.com",
+    messagingSenderId: "37854973622",
+    appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.database();
+
+/* ════════════════════════════════════════════════════
+   ANDROID BRIDGE HELPER
+   Safely calls AndroidApp.onUserLogin(uid, email)
+   only when running inside the Android WebView.
+   This triggers FCM token fetch + permission request
+   on the native side.
+════════════════════════════════════════════════════ */
+function notifyAndroidLogin(uid, email) {
+    try {
+        if (typeof AndroidApp !== 'undefined' && AndroidApp.onUserLogin) {
+            AndroidApp.onUserLogin(uid, email || '');
+            console.log('[Bridge] onUserLogin called for uid=' + uid);
+        }
+    } catch (e) {
+        // Not running in Android WebView — safe to ignore
+        console.log('[Bridge] AndroidApp not available (browser mode)');
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   AUTH STATE — If logged in:
+   • Check Users/{uid} for username
+   • If no username → show UsernameSetupDialog
+   • If username exists → go to profile
+════════════════════════════════════════════════════ */
+auth.onAuthStateChanged(async user => {
+    if (!user) return;
+
+    // ── Notify Android of login (triggers FCM token save) ────────────────
+    notifyAndroidLogin(user.uid, user.email);
+
+    try {
+        const snap = await db.ref('Users/' + user.uid).get();
+
+        if (snap.exists()) {
+            const username = snap.child('username').val();
+            if (!username || username.trim() === '') {
+                openUsernameModal();
+            } else {
+                window.location.href = 'profile.html';
+            }
+        } else {
+            openUsernameModal();
+        }
+    } catch (e) {
+        const dn = user.displayName;
+        if (!dn || dn.trim() === '' || dn === 'Anonymous User') {
+            openUsernameModal();
+        } else {
+            window.location.href = 'profile.html';
+        }
+    }
+});
+
+/* ════════════════════════════════════════════════════
+   SAVE USERNAME TO DB
+════════════════════════════════════════════════════ */
+async function writeUsernameRecord(user, username) {
+    const now = Date.now();
+    await user.updateProfile({ displayName: username });
+    const userData = {
+        uid      : user.uid,
+        email    : user.email || '',
+        username : username,
+        createdAt: now,
+        lastSeen : now,
+        isActive : true
+        // NOTE: fcmToken is saved by Android side via updateUserActivity()
+        //       after onUserLogin() is called. No need to set it here.
+    };
+    await db.ref('Users/' + user.uid).set(userData);
+}
+
+/* ════════════════════════════════════════════════════
+   UPDATE lastSeen + isActive on every login
+════════════════════════════════════════════════════ */
+async function touchLoginStatus(uid) {
+    await db.ref('Users/' + uid).update({
+        isActive : true,
+        lastSeen : Date.now()
+    });
+}
+
+/* ════════════════════════════════════════════════════
+   UI HELPERS
+════════════════════════════════════════════════════ */
+function goTab(tab) {
+    clearAlerts();
+    const isLogin = tab === 'login';
+    document.getElementById('tabLogin').classList.toggle('on',   isLogin);
+    document.getElementById('tabSignup').classList.toggle('on',  !isLogin);
+    document.getElementById('panelLogin').classList.toggle('on',  isLogin);
+    document.getElementById('panelSignup').classList.toggle('on', !isLogin);
+}
+
+function toggleEye(id, btn) {
+    const inp = document.getElementById(id);
+    const ico = btn.querySelector('i');
+    inp.type === 'password'
+        ? (inp.type = 'text',     ico.classList.replace('fa-eye','fa-eye-slash'))
+        : (inp.type = 'password', ico.classList.replace('fa-eye-slash','fa-eye'));
+}
+
+function checkStr(pwd) {
+    const meter = document.getElementById('strMeter');
+    const bars  = ['sb1','sb2','sb3','sb4'].map(id => document.getElementById(id));
+    const label = document.getElementById('strLabel');
+    if (!pwd) { meter.style.display = 'none'; return; }
+    meter.style.display = 'block';
+    let s = 0;
+    if (pwd.length >= 6)           s++;
+    if (pwd.length >= 8)           s++;
+    if (/[A-Z]/.test(pwd))         s++;
+    if (/[0-9]/.test(pwd))         s++;
+    const cfg = [
+        {c:'#e50914',t:'Weak',  tc:'#ff8080'},
+        {c:'#ff6b35',t:'Fair',  tc:'#ff9f70'},
+        {c:'#f7b731',t:'Good',  tc:'#f7b731'},
+        {c:'#27ae60',t:'Strong',tc:'#6bcb77'}
+    ];
+    const v = cfg[Math.min(s, cfg.length) - 1] || cfg[0];
+    bars.forEach((b,i) => b.style.background = i < s ? v.c : 'rgba(255,255,255,0.07)');
+    label.textContent = 'Strength: ' + v.t;
+    label.style.color = v.tc;
+}
+
+function showAlert(id, msg, type='err') {
+    const icons = {err:'fa-circle-exclamation', ok:'fa-circle-check'};
+    document.getElementById(id).innerHTML =
+        `<div class="alert alert-${type}"><i class="fas ${icons[type]}"></i><span>${msg}</span></div>`;
+}
+function clearAlerts() {
+    ['loginAlert','signupAlert','forgotAlert'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+}
+
+function fbErr(code) {
+    const m = {
+        'auth/user-not-found'        : 'No account found with this email.',
+        'auth/wrong-password'        : 'Incorrect password.',
+        'auth/invalid-email'         : 'Invalid email address.',
+        'auth/email-already-in-use'  : 'This email is already registered.',
+        'auth/weak-password'         : 'Password must be at least 6 characters.',
+        'auth/too-many-requests'     : 'Too many attempts. Try again later.',
+        'auth/network-request-failed': 'Network error. Check your connection.',
+        'auth/invalid-credential'    : 'Invalid email or password.'
+    };
+    return m[code] || 'Something went wrong. Please try again.';
+}
+
+function setBtnLoad(id, on, label) {
+    const b = document.getElementById(id);
+    b.classList.toggle('loading', on);
+    b.disabled = on;
+    if (label) b.querySelector('.lbl').textContent = label;
+}
+
+/* ════════════════════════════════════════════════════
+   LOGIN
+   After success → onAuthStateChanged fires →
+   notifyAndroidLogin() is called there automatically.
+════════════════════════════════════════════════════ */
+async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd   = document.getElementById('loginPwd').value;
+    clearAlerts();
+    if (!email || !pwd) { showAlert('loginAlert','Please fill in all fields.'); return; }
+    setBtnLoad('loginBtn', true, 'Signing in…');
+    try {
+        await auth.signInWithEmailAndPassword(email, pwd);
+        // onAuthStateChanged handles: notifyAndroidLogin + username check + redirect
+    } catch (e) {
+        showAlert('loginAlert', fbErr(e.code));
+        setBtnLoad('loginBtn', false, 'Sign In');
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   SIGNUP
+   After Auth account created → onAuthStateChanged fires →
+   notifyAndroidLogin() is called automatically.
+════════════════════════════════════════════════════ */
+async function doSignup() {
+    const email = document.getElementById('signupEmail').value.trim();
+    const pwd   = document.getElementById('signupPwd').value;
+    const cpwd  = document.getElementById('confirmPwd').value;
+    clearAlerts();
+
+    if (!email || !pwd || !cpwd)    { showAlert('signupAlert','Please fill in all fields.'); return; }
+    if (!/\S+@\S+\.\S+/.test(email)){ showAlert('signupAlert','Invalid email format.'); return; }
+    if (pwd.length < 6)             { showAlert('signupAlert','Password must be at least 6 characters.'); return; }
+    if (!/\d/.test(pwd))            { showAlert('signupAlert','Password must contain at least one number.'); return; }
+    if (pwd !== cpwd)               { showAlert('signupAlert','Passwords do not match.'); return; }
+
+    setBtnLoad('signupBtn', true, 'Creating account…');
+    try {
+        await auth.createUserWithEmailAndPassword(email, pwd);
+        // onAuthStateChanged fires → notifyAndroidLogin() called → username modal shown
+        document.getElementById('signupFields').style.display   = 'none';
+        document.getElementById('redirectScreen').style.display = 'flex';
+    } catch (e) {
+        showAlert('signupAlert', fbErr(e.code));
+        setBtnLoad('signupBtn', false, 'Create Account');
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   USERNAME MODAL
+════════════════════════════════════════════════════ */
+function openUsernameModal() {
+    document.getElementById('usernameModal').classList.add('open');
+    setTimeout(() => document.getElementById('usernameInput').focus(), 300);
+}
+
+function onUsernameType(inp) {
+    inp.value = inp.value.replace(/[^a-zA-Z0-9_]/g, '');
+    const len = inp.value.length;
+    document.getElementById('uCharCount').textContent = len + '/20';
+    document.getElementById('usernameErr').style.display = 'none';
+    inp.classList.remove('err');
+    document.getElementById('usernameBtn').disabled = (len < 3 || len > 20);
+}
+
+async function saveUsername() {
+    const inp      = document.getElementById('usernameInput');
+    const username = inp.value.trim();
+    const errEl    = document.getElementById('usernameErr');
+    const btn      = document.getElementById('usernameBtn');
+    const spin     = document.getElementById('uSpin');
+    const lbl      = document.getElementById('uBtnLabel');
+
+    if (!username)              { showUErr('⚠️ Username cannot be empty'); return; }
+    if (username.length < 3)    { showUErr('⚠️ Username must be at least 3 characters'); return; }
+    if (username.length > 20)   { showUErr('⚠️ Username must be less than 20 characters'); return; }
+    if (!/^[a-zA-Z]/.test(username)) { showUErr('⚠️ Username must start with a letter'); return; }
+
+    btn.disabled       = true;
+    spin.style.display = 'block';
+    lbl.textContent    = 'Saving…';
+
+    try {
+        const user = auth.currentUser;
+        if (!user) { showUErr('❌ User not logged in'); return; }
+
+        await writeUsernameRecord(user, username);
+
+        // ── After username saved, notify Android again so FCM token
+        //    is written alongside the new DB record ────────────────────────
+        notifyAndroidLogin(user.uid, user.email);
+
+        document.getElementById('usernameModal').classList.remove('open');
+        window.location.href = 'profile.html';
+
+    } catch (e) {
+        showUErr('❌ Failed to set username. Please try again.');
+        btn.disabled       = false;
+        spin.style.display = 'none';
+        lbl.textContent    = 'Continue';
+    }
+}
+
+function showUErr(msg) {
+    const errEl = document.getElementById('usernameErr');
+    const inp   = document.getElementById('usernameInput');
+    errEl.textContent    = msg;
+    errEl.style.display  = 'block';
+    inp.classList.add('err');
+    document.getElementById('usernameBtn').disabled = false;
+    document.getElementById('uSpin').style.display  = 'none';
+    document.getElementById('uBtnLabel').textContent = 'Continue';
+}
+
+/* ════════════════════════════════════════════════════
+   FORGOT PASSWORD
+════════════════════════════════════════════════════ */
+function openForgot() {
+    const pre = document.getElementById('loginEmail').value.trim();
+    if (pre) document.getElementById('forgotEmail').value = pre;
+    document.getElementById('forgotAlert').innerHTML = '';
+    document.getElementById('forgotModal').classList.add('open');
+}
+function closeForgot() { document.getElementById('forgotModal').classList.remove('open'); }
+function backdropClose(e) { if (e.target === document.getElementById('forgotModal')) closeForgot(); }
+async function doForgot() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const btn   = document.getElementById('forgotSendBtn');
+    if (!email) { showAlert('forgotAlert','Enter your email address.'); return; }
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+        await auth.sendPasswordResetEmail(email);
+        showAlert('forgotAlert',`Reset link sent to <strong>${email}</strong>`,'ok');
+        btn.textContent = 'Sent ✓';
+        setTimeout(closeForgot, 2800);
+    } catch (e) {
+        showAlert('forgotAlert', fbErr(e.code));
+        btn.disabled = false; btn.textContent = 'Send Link';
+    }
+}
+
+/* keyboard shortcut */
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('usernameModal').classList.contains('open')) { saveUsername(); return; }
+    if (document.getElementById('forgotModal').classList.contains('open'))   { doForgot();    return; }
+    document.getElementById('panelLogin').classList.contains('on') ? doLogin() : doSignup();
+});
+</script>
+
+<script>
+/* ── Bottom nav ── */
+(function(){
+    var nav=document.getElementById('bottomNav');
+    nav.style.transform='translateY(0)';
+    document.querySelectorAll('.bottom-nav-item').forEach(function(item){
+        item.addEventListener('click',function(e){
+            var wrap=item.querySelector('.bnav-icon-wrap');if(!wrap)return;
+            var rip=document.createElement('span');rip.className='bnav-ripple';
+            var rect=wrap.getBoundingClientRect(),size=Math.max(rect.width,rect.height);
+            rip.style.cssText='width:'+size+'px;height:'+size+'px;top:'+(e.clientY-rect.top-size/2)+'px;left:'+(e.clientX-rect.left-size/2)+'px';
+            wrap.style.position='relative';wrap.style.overflow='hidden';
+            wrap.appendChild(rip);rip.addEventListener('animationend',function(){rip.remove();});
+        });
+    });
+    var last=window.pageYOffset,enabled=false;
+    setTimeout(function(){last=window.pageYOffset;enabled=true;},600);
+    window.addEventListener('scroll',function(){
+        if(!enabled)return;
+        var cur=window.pageYOffset;
+        if(cur<=80){nav.style.transform='translateY(0)';last=cur;return;}
+        if(cur>last+6)nav.style.transform='translateY(110%)';
+        else if(cur<last-6)nav.style.transform='translateY(0)';
+        last=cur;
+    },{passive:true});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+/* ============================================
+   AD CONTAINER STYLES
+   Professional ad integration with responsive design
+============================================ */
+
+/* Base Ad Container */
+.ad-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    background: transparent;
+    overflow: hidden;
+}
+
+/* Desktop Top Banner 728x90 - DESKTOP ONLY */
+.desktop-banner-top {
+    width: 100%;
+    max-width: 1400px;
+    margin: 80px auto 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(26,26,26,0.5) 0%, rgba(10,10,10,0.5) 100%);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Native Banner Ad - DESKTOP ONLY */
+.native-ad {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    margin: 25px auto;
+    background: linear-gradient(135deg, rgba(26,26,26,0.3) 0%, rgba(10,10,10,0.3) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Banner 300x250 - Works on both desktop and mobile */
+.banner-300x250 {
+    width: 300px;
+    min-height: 250px;
+    padding: 15px;
+    margin: 30px auto;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Hide specific banner on DESKTOP ONLY */
+@media (min-width: 769px) {
+    .hide-on-desktop {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+}
+
+/* Mobile Banner 320x100 - MOBILE ONLY */
+.mobile-banner-320x100 {
+    display: none;
+    width: 100%;
+    max-width: 320px;
+    min-height: 100px;
+    padding: 10px;
+    margin: 20px auto;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Mobile Sticky Bottom Banner 320x50 */
+.mobile-sticky-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    width: 100%;
+    padding: 8px 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.98) 20%, rgba(10,10,10,0.98) 100%);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Single small banner - visible on ALL devices */
+.small-banner-below-continue,
+.small-banner-below-title {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    max-width: 320px;
+    overflow: hidden;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Medium banner below trending - visible on ALL devices */
+.banner-below-trending {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 300px;
+    min-height: 250px;
+    overflow: hidden;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(26,26,26,0.4) 0%, rgba(10,10,10,0.4) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Ad Label */
+.ad-label {
+    font-size: 9px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* ============ RESPONSIVE AD STYLES ============ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .desktop-banner-top {
+        margin-top: 70px;
+        padding: 12px;
+    }
+    
+    .native-ad {
+        padding: 15px;
+        margin: 20px auto;
+    }
+    
+    .banner-300x250 {
+        margin: 25px auto;
+    }
+}
+
+/* Mobile - Hide Desktop Ads, Show Mobile Ads */
+@media (max-width: 768px) {
+    /* Hide desktop-only ads */
+    .ad-container.desktop-banner-top,
+    div.ad-container.desktop-banner-top,
+    .desktop-banner-top {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+    
+    .ad-container.native-ad,
+    div.ad-container.native-ad,
+    .native-ad {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+    
+    .native-ad *,
+    .native-ad script,
+    .native-ad iframe,
+    .native-ad div {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
+    
+    .desktop-banner-top *,
+    .desktop-banner-top script,
+    .desktop-banner-top iframe,
+    .desktop-banner-top div {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
+    
+    /* Show mobile banners */
+    .mobile-banner-320x100 {
+        display: flex !important;
+        visibility: visible !important;
+    }
+    
+    .banner-300x250 {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        margin: 20px auto;
+    }
+    
+    .mobile-sticky-bottom {
+        padding: 5px 0;
+    }
+    
+    /* Bottom padding for sticky ad */
+    .main-content,
+    .browse-content,
+    .watch-main {
+        padding-bottom: 70px;
+    }
+    
+    /* Keep custom banners visible on mobile */
+    .small-banner-below-continue,
+    .small-banner-below-title {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+    }
+    
+    .banner-below-trending {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 250px !important;
+    }
+    
+    /* Show the hide-on-desktop banner on mobile */
+    .hide-on-desktop {
+        display: flex !important;
+        visibility: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 250px !important;
+        overflow: visible !important;
+        margin: 20px auto !important;
+        padding: 10px !important;
+        opacity: 1 !important;
+        position: relative !important;
+        left: auto !important;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .banner-300x250 {
+        padding: 8px;
+        margin: 15px auto;
+    }
+    
+    .mobile-banner-320x100 {
+        padding: 8px;
+        margin: 15px auto;
+    }
+    
+    .mobile-sticky-bottom {
+        padding: 4px 0;
+    }
+}
+
+/* ============ AD ANIMATION ============ */
+.ad-container {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============ AD CLOSE BUTTON ============ */
+.ad-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+}
+
+.ad-close:hover {
+    background: #e50914;
+    transform: scale(1.1);
+}

@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch - Streamify</title>
+
+
+    <!-- ✅ Firebase SDKs — must be first so presence fires immediately -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+    <!-- Firebase Config — inline so presence fires immediately -->
+    <script>
+        const firebaseConfig = {
+            apiKey:            "AIzaSyBGE29YUks6sp4jZS4MzE2JIMF-RMLwVLg",
+            authDomain:        "moddy-store.firebaseapp.com",
+            databaseURL:       "https://moddy-store-default-rtdb.firebaseio.com",
+            projectId:         "moddy-store",
+            storageBucket:     "moddy-store.appspot.com",
+            messagingSenderId: "37854973622",
+            appId:             "1:37854973622:web:8f927e0a1d267d099ca017"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db   = firebase.database();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/watch.css">
+    <link rel="stylesheet" href="css/ads.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+
+        /* ══════════════════════════════════════
+           WATCH PAGE ADS
+        ══════════════════════════════════════ */
+        .watch-ad {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .watch-ad-small {
+            min-height: 50px;
+            margin: 18px auto 22px;
+        }
+
+        .watch-ad-medium {
+            min-height: 250px;
+            margin: 28px auto 34px;
+        }
+
+        .watch-ad iframe {
+            max-width: 100%;
+            border: 0;
+        }
+
+        @media (max-width: 480px) {
+            .watch-ad-small {
+                margin: 16px auto 20px;
+            }
+
+            .watch-ad-medium {
+                margin: 24px auto 30px;
+            }
+        }
+
+
+        /* ══════════════════════════════════════
+           STREAMIFY — MULTI-LAYER ANTI-ADBLOCK GATE
+        ══════════════════════════════════════ */
+        #streamifyAdblockOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483647;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(229,9,20,.20), transparent 42%),
+                rgba(5,5,8,.985);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        #streamifyAdblockOverlay.active {
+            display: flex;
+        }
+
+        .streamify-adblock-card {
+            width: min(540px, 100%);
+            padding: 34px 28px 28px;
+            border-radius: 24px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+            border: 1px solid rgba(255,255,255,.12);
+            box-shadow: 0 30px 110px rgba(0,0,0,.72), 0 0 60px rgba(229,9,20,.14);
+            animation: streamifyAdblockIn .45s cubic-bezier(.2,.8,.2,1);
+        }
+
+        @keyframes streamifyAdblockIn {
+            from { opacity: 0; transform: translateY(20px) scale(.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .streamify-adblock-icon {
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(229,9,20,.12);
+            border: 1px solid rgba(229,9,20,.35);
+            box-shadow: 0 0 36px rgba(229,9,20,.2);
+        }
+
+        .streamify-adblock-icon i {
+            color: #e50914;
+            font-size: 31px;
+        }
+
+        .streamify-adblock-card h2 {
+            margin: 0 0 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .streamify-adblock-card p {
+            margin: 0 auto 18px;
+            max-width: 440px;
+            color: rgba(255,255,255,.64);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .streamify-adblock-card strong { color: #fff; }
+
+        .streamify-adblock-reason {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 18px 0 22px;
+            padding: 15px 16px;
+            text-align: left;
+            border-radius: 14px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.075);
+        }
+
+        .streamify-adblock-reason i {
+            color: #e50914;
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .streamify-adblock-reason span {
+            color: rgba(255,255,255,.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        #streamifyAdblockRetry {
+            width: 100%;
+            border: 0;
+            border-radius: 13px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg,#e50914,#b20710);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(229,9,20,.25);
+            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+
+        #streamifyAdblockRetry:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 30px rgba(229,9,20,.35);
+        }
+
+        #streamifyAdblockRetry:disabled {
+            cursor: wait;
+            opacity: .75;
+            transform: none;
+        }
+
+        .streamify-adblock-status {
+            display: none;
+            margin-top: 12px;
+            color: rgba(255,255,255,.46);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .streamify-adblock-help {
+            color: rgba(255,255,255,.38);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.55;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 480px) {
+            #streamifyAdblockOverlay { padding: 15px; }
+
+            .streamify-adblock-card {
+                padding: 28px 20px 22px;
+                border-radius: 20px;
+            }
+
+            .streamify-adblock-icon {
+                width: 66px;
+                height: 66px;
+                margin-bottom: 16px;
+            }
+
+            .streamify-adblock-card h2 { font-size: 25px; }
+        }
+
+
+        /* ============================================================
+           STREAMIFY — FRIEND SHARE CTA
+           Subtle, delayed, and non-intrusive.
+           ============================================================ */
+        #streamifySharePrompt {
+            position: fixed;
+            right: 20px;
+            bottom: 92px;
+            z-index: 8800;
+            width: min(360px, calc(100vw - 30px));
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(18px) scale(.98);
+            transition:
+                opacity .32s ease,
+                visibility .32s ease,
+                transform .32s cubic-bezier(.2,.8,.2,1);
+            pointer-events: none;
+        }
+
+        #streamifySharePrompt.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .streamify-share-card {
+            position: relative;
+            padding: 18px 18px 16px;
+            border-radius: 18px;
+            background:
+                linear-gradient(145deg, rgba(22,22,30,.97), rgba(10,10,15,.97));
+            border: 1px solid rgba(255,255,255,.10);
+            box-shadow:
+                0 18px 50px rgba(0,0,0,.48),
+                0 0 35px rgba(229,9,20,.10);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .streamify-share-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 18%;
+            right: 18%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(229,9,20,.75),
+                transparent
+            );
+        }
+
+        .streamify-share-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .streamify-share-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            color: #fff;
+            background: linear-gradient(135deg,#e50914,#b20710);
+            box-shadow: 0 8px 22px rgba(229,9,20,.22);
+        }
+
+        .streamify-share-icon i {
+            font-size: 17px;
+        }
+
+        .streamify-share-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .streamify-share-content h3 {
+            margin: 0 0 5px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.25;
+            font-weight: 800;
+        }
+
+        .streamify-share-content p {
+            margin: 0;
+            color: rgba(255,255,255,.55);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .streamify-share-close {
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -3px -3px 0 0;
+            border: 0;
+            border-radius: 50%;
+            color: rgba(255,255,255,.4);
+            background: transparent;
+            cursor: pointer;
+            transition: color .2s ease, background .2s ease;
+        }
+
+        .streamify-share-close:hover {
+            color: #fff;
+            background: rgba(255,255,255,.08);
+        }
+
+        .streamify-share-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 15px;
+        }
+
+        .streamify-share-primary,
+        .streamify-share-secondary {
+            flex: 1;
+            min-width: 0;
+            border-radius: 11px;
+            padding: 11px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+        }
+
+        .streamify-share-primary {
+            border: 0;
+            color: #fff;
+            background: linear-gradient(135deg,#e50914,#b20710);
+            box-shadow: 0 7px 18px rgba(229,9,20,.20);
+        }
+
+        .streamify-share-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 23px rgba(229,9,20,.28);
+        }
+
+        .streamify-share-secondary {
+            border: 1px solid rgba(255,255,255,.10);
+            color: rgba(255,255,255,.75);
+            background: rgba(255,255,255,.045);
+        }
+
+        .streamify-share-secondary:hover {
+            color: #fff;
+            background: rgba(255,255,255,.08);
+        }
+
+        .streamify-share-note {
+            margin-top: 10px;
+            color: rgba(255,255,255,.28);
+            font-family: 'Inter', sans-serif;
+            font-size: 9.5px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            #streamifySharePrompt {
+                right: 15px;
+                left: 15px;
+                bottom: 86px;
+                width: auto;
+            }
+
+            .streamify-share-card {
+                padding: 16px 15px 14px;
+                border-radius: 16px;
+            }
+
+            .streamify-share-content h3 {
+                font-size: 14px;
+            }
+
+            .streamify-share-actions {
+                margin-top: 13px;
+            }
+        }
+
+        /* ══════════════════════════════════════
+           PRESENCE BADGE — avatar dot
+        ══════════════════════════════════════ */
+        .bnav-avatar-wrap {
+            position: relative;
+            width: auto;
+            display: inline-flex;
+        }
+        .presence-dot {
+            position: absolute;
+            bottom: 0px;
+            right: -1px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            border: 2px solid #0a0a0f;
+            background: #555;
+            transition: background 0.4s ease;
+            z-index: 2;
+        }
+        .presence-dot.online  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
+        .presence-dot.offline { background: #555; box-shadow: none; }
+
+        /* Pulse ring only when online */
+        .presence-dot.online::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid rgba(34,197,94,0.5);
+            animation: presencePulse 2s ease-out infinite;
+        }
+        @keyframes presencePulse {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* ══════════════════════════════════════
+           BOTTOM NAV (same as index.html)
+        ══════════════════════════════════════ */
+        body { padding-bottom: 80px; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 9000;
+            height: 70px; display: flex; align-items: stretch;
+            background: rgba(10,10,15,0.82);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.6), 0 -1px 0 rgba(229,9,20,0.15) inset;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            transition: transform 0.35s ease;
+        }
+        .bottom-nav::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(229,9,20,0.5) 30%, rgba(255,107,107,0.6) 50%, rgba(229,9,20,0.5) 70%, transparent);
+            filter: blur(0.5px);
+        }
+        .bottom-nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 5px; text-decoration: none;
+            color: rgba(255,255,255,0.45); font-size: 10px; font-weight: 600;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            cursor: pointer; background: none; border: none; padding: 0;
+            transition: color 0.25s ease; position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-nav-item:hover  { color: rgba(255,255,255,0.75); }
+        .bottom-nav-item.active { color: #fff; }
+
+        .bnav-icon-wrap {
+            position: relative; width: 44px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 14px; transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .bottom-nav-item.active .bnav-icon-wrap { background: rgba(229,9,20,0.18); transform: translateY(-1px); }
+        .bottom-nav-item:active .bnav-icon-wrap { transform: scale(0.88) translateY(-1px); }
+        .bnav-icon-wrap i { font-size: 18px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease; }
+        .bottom-nav-item.active .bnav-icon-wrap i { color: #e50914; filter: drop-shadow(0 0 8px rgba(229,9,20,0.7)); transform: scale(1.15); }
+
+        .bnav-label { font-family: 'Inter', sans-serif; font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; transition: color 0.25s ease, opacity 0.25s ease; opacity: 0.7; }
+        .bottom-nav-item.active .bnav-label { opacity: 1; color: #fff; }
+
+        .bnav-dot { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) scaleX(0); width: 20px; height: 3px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, #e50914, #ff6b6b); box-shadow: 0 2px 8px rgba(229,9,20,0.6); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .bottom-nav-item.active .bnav-dot { transform: translateX(-50%) scaleX(1); }
+
+        .bnav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2); transition: border-color 0.25s ease, transform 0.25s ease; }
+        .bottom-nav-item.active .bnav-avatar { border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.5); transform: scale(1.08) translateY(-1px); }
+
+        .bnav-ripple { position: absolute; border-radius: 50%; background: rgba(229,9,20,0.25); transform: scale(0); animation: bnavRipple 0.5s ease-out forwards; pointer-events: none; }
+        @keyframes bnavRipple { to { transform: scale(3.5); opacity: 0; } }
+
+        /* Presence label under avatar */
+        #bnav-profile .presence-label { font-size: 8px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: -2px; transition: color 0.3s; display: none; }
+        #bnav-profile.has-user  .presence-label { display: block; }
+        #bnav-profile.online-now .presence-label { color: #22c55e; }
+    </style>
+
+<!-- Streamify automatic version check + cache busting -->
+<script src="version-check.js"></script>
+    <!-- Adsterra Popunder -->
+  
+</head>
+<body class="watch-body">
+
+    <!-- ============================================================
+         STREAMIFY — FRIEND SHARE CTA
+         ============================================================ -->
+    <div id="streamifySharePrompt"
+         role="dialog"
+         aria-label="Share Streamify with friends"
+         aria-live="polite">
+
+        <div class="streamify-share-card">
+
+            <div class="streamify-share-top">
+
+                <div class="streamify-share-icon" aria-hidden="true">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+
+                <div class="streamify-share-content">
+                    <h3>Enjoying Streamify?</h3>
+                    <p>
+                        Know someone who’d enjoy discovering movies and
+                        shows here? A quick share helps more people find us.
+                    </p>
+                </div>
+
+                <button
+                    id="streamifyShareClose"
+                    class="streamify-share-close"
+                    type="button"
+                    aria-label="Dismiss share message">
+                    <i class="fas fa-times"></i>
+                </button>
+
+            </div>
+
+            <div class="streamify-share-actions">
+
+                <button
+                    id="streamifyShareNow"
+                    class="streamify-share-primary"
+                    type="button">
+                    <i class="fas fa-share-nodes"></i>
+                    &nbsp; Share Streamify
+                </button>
+
+                <button
+                    id="streamifyCopyLink"
+                    class="streamify-share-secondary"
+                    type="button">
+                    <i class="fas fa-link"></i>
+                    &nbsp; Copy Link
+                </button>
+
+            </div>
+
+            <div id="streamifyShareNote" class="streamify-share-note">
+                Thanks for helping us spread the word.
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ============================================================
+         STREAMIFY — ANTI-ADBLOCK ACCESS GATE
+         ============================================================ -->
+    <div id="streamifyAdblockOverlay"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="streamifyAdblockTitle">
+
+        <div class="streamify-adblock-card">
+
+            <div class="streamify-adblock-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <h2 id="streamifyAdblockTitle">Ad Blocker Detected</h2>
+
+            <p>
+                It looks like advertising is being blocked in your
+                browser or network. <strong>Streamify is free to use</strong>
+                and advertising helps us keep the service running.
+            </p>
+
+            <div class="streamify-adblock-reason">
+                <i class="fas fa-heart"></i>
+                <span>
+                    Please disable your browser ad blocker, Brave Shields,
+                    DNS ad filtering, or privacy filter for
+                    <strong>streamify.website</strong>, then try again.
+                </span>
+            </div>
+
+            <button id="streamifyAdblockRetry" type="button">
+                <i class="fas fa-rotate-right"></i>
+                &nbsp; I've Disabled It — Continue
+            </button>
+
+            <div id="streamifyAdblockStatus" class="streamify-adblock-status"></div>
+
+            <div class="streamify-adblock-help">
+                Brave: turn off Shields for this site.<br>
+                DNS/ad filtering: allow Streamify's advertising domains.
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Home</span>
+    </a>
+
+    <!-- Player -->
+    <div class="player-container">
+        <div class="player-loader" id="playerLoader">
+            <div class="spinner"></div>
+            <p>Loading Player...</p>
+        </div>
+        <iframe id="player" allowfullscreen allow="autoplay; fullscreen"></iframe>
+    </div>
+
+    <!-- Server Selector -->
+    <div class="server-selector">
+        <h3><i class="fas fa-server"></i> Select Server</h3>
+        <p class="server-hint">If current server doesn't work, try another one</p>
+        <div class="server-buttons" id="serverButtons"></div>
+    </div>
+
+    <!-- Small 320x50 Banner Ad — below server selection -->
+    <div class="watch-ad watch-ad-small" aria-label="Advertisement">
+        <script>
+          atOptions = {
+            'key' : 'a0d5b5f1326c126f650c482f872fb82c',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/a0d5b5f1326c126f650c482f872fb82c/invoke.js"></script>
+    </div>
+
+    <!-- Content -->
+    <div class="watch-main">
+
+        <!-- Title & Meta -->
+        <div class="watch-header">
+            <h1 id="watchTitle">Loading...</h1>
+            <div class="watch-meta">
+                <span class="meta-rating"><i class="fas fa-star"></i> <span id="watchRating">8.5</span></span>
+                <span id="watchYear">2024</span>
+                <span id="watchDuration">2h 15m</span>
+                <span class="meta-badge">HD</span>
+            </div>
+        </div>
+      
+      
+        <!-- Episode Selector (TV Shows only — shown/hidden by JS) -->
+        <div class="episode-selector" id="episodeSelector" style="display:none;">
+            <div class="selector-header">
+                <h2><i class="fas fa-list"></i> Episodes</h2>
+                <select id="seasonSelect"></select>
+            </div>
+            <div class="episodes-grid" id="episodesGrid"></div>
+        </div>
+
+      <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1KPZ88GRHK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1KPZ88GRHK');
+</script>
+
+        <!-- Action Buttons -->
+        <div class="watch-actions" id="watchActions">
+            <button class="action-btn" id="listBtn">
+                <i class="fas fa-plus"></i>
+                <span>My List</span>
+            </button>
+            <button class="action-btn" id="shareBtn">
+                <i class="fas fa-share-alt"></i>
+                <span>Share</span>
+            </button>
+            <button class="action-btn" id="likeBtn">
+                <i class="far fa-heart"></i>
+                <span>Like</span>
+            </button>
+        </div>
+
+        <!-- Description -->
+        <div class="watch-desc">
+            <p id="watchDesc">Loading description...</p>
+            <div class="watch-info">
+                <p><strong>Genres:</strong> <span id="watchGenres">-</span></p>
+                <p><strong>Cast:</strong> <span id="watchCast">-</span></p>
+            </div>
+        </div>
+
+      
+
+        <!-- Medium 300x250 Banner Ad — above More Like This -->
+        <div class="watch-ad watch-ad-medium" aria-label="Advertisement">
+            <script>
+              atOptions = {
+                'key' : '05640c5548ff6e2662f9769bcbbeb043',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/05640c5548ff6e2662f9769bcbbeb043/invoke.js"></script>
+        </div>
+
+        <!-- Similar -->
+        <div class="similar-section">
+            <h2><i class="fas fa-film"></i> More Like This</h2>
+            <div class="similar-grid" id="similarGrid"></div>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         BOTTOM NAVIGATION BAR
+    ══════════════════════════════════════ -->
+    <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
+
+        <!-- Home -->
+        <a href="index.html" class="bottom-nav-item" id="bnav-home" aria-label="Home">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-house"></i></div>
+            <span class="bnav-label">Home</span>
+        </a>
+
+        <!-- Search -->
+        <a href="index.html#search" class="bottom-nav-item" id="bnav-search" aria-label="Search">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-magnifying-glass"></i></div>
+            <span class="bnav-label">Search</span>
+        </a>
+
+        <!-- My List -->
+        <a href="mylist.html" class="bottom-nav-item" id="bnav-mylist" aria-label="My List">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap"><i class="fas fa-bookmark"></i></div>
+            <span class="bnav-label">My List</span>
+        </a>
+
+        <!-- Profile — avatar + live presence dot -->
+        <a href="profile.html" class="bottom-nav-item" id="bnav-profile" aria-label="Profile">
+            <div class="bnav-dot"></div>
+            <div class="bnav-icon-wrap" style="width:auto;background:transparent !important;">
+                <div class="bnav-avatar-wrap">
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                        alt="Profile"
+                        class="bnav-avatar"
+                        id="bnavAvatar"
+                    >
+                    <span class="presence-dot offline" id="presenceDot"></span>
+                </div>
+            </div>
+            <span class="bnav-label presence-label" id="presenceLabel">Profile</span>
+        </a>
+
+    </nav>
+
+    <!-- App JS -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/watch.js"></script>
+
+    <!-- ══════════════════════════════════════════════════════════
+         REALTIME PRESENCE SYSTEM
+         • On page open   → isActive: true,  lastSeen: now
+         • On page close  → isActive: false, lastSeen: now
+           (onDisconnect fires even on hard/tab close)
+         • Live listener  → updates the badge in the bottom nav
+    ══════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
+
+        var presenceDot   = document.getElementById('presenceDot');
+        var presenceLabel = document.getElementById('presenceLabel');
+        var bnavProfile   = document.getElementById('bnav-profile');
+        var lastSeenRef   = null;
+
+        /* ── Helpers ── */
+        function setOnline() {
+            presenceDot.className     = 'presence-dot online';
+            presenceLabel.textContent = 'Active';
+            bnavProfile.classList.add('online-now', 'has-user');
+        }
+
+        function setOffline(lastSeen) {
+            presenceDot.className = 'presence-dot offline';
+            bnavProfile.classList.remove('online-now');
+            bnavProfile.classList.add('has-user');
+            presenceLabel.textContent = lastSeen ? formatLastSeen(lastSeen) : 'Offline';
+        }
+
+        function setNoUser() {
+            presenceDot.className     = 'presence-dot offline';
+            presenceLabel.textContent = 'Profile';
+            bnavProfile.classList.remove('online-now', 'has-user');
+        }
+
+        function formatLastSeen(ts) {
+            var diff = Date.now() - ts;
+            var m = Math.floor(diff / 60000);
+            var h = Math.floor(diff / 3600000);
+            var d = Math.floor(diff / 86400000);
+            if (diff < 60000)   return 'Just now';
+            if (diff < 3600000) return m + 'm ago';
+            if (diff < 86400000) return h + 'h ago';
+            return d + 'd ago';
+        }
+
+        /* ── Firebase Auth state ── */
+        auth.onAuthStateChanged(function (user) {
+
+            /* Detach any previous DB listener */
+            if (lastSeenRef) {
+                lastSeenRef.off();
+                lastSeenRef = null;
+            }
+
+            if (!user) {
+                setNoUser();
+                return;
+            }
+
+            var userRef = db.ref('Users/' + user.uid);
+
+            /* 1. Mark ONLINE immediately */
+            userRef.update({
+                isActive : true,
+                lastSeen : Date.now()
+            });
+
+            /* 2. onDisconnect — runs server-side even on hard close */
+            userRef.onDisconnect().update({
+                isActive : false,
+                lastSeen : Date.now()
+            });
+
+            /* 3. Real-time listener → update badge live */
+            lastSeenRef = userRef;
+            userRef.on('value', function (snap) {
+                if (!snap.exists()) { setNoUser(); return; }
+                var isActive = snap.child('isActive').val();
+                var lastSeen = snap.child('lastSeen').val();
+                if (isActive === true) {
+                    setOnline();
+                } else {
+                    setOffline(lastSeen);
+                }
+            });
+
+            /* 4. Heartbeat — keep lastSeen fresh every 60 s */
+            var heartbeat = setInterval(function () {
+                if (auth.currentUser) {
+                    userRef.update({ lastSeen: Date.now() });
+                } else {
+                    clearInterval(heartbeat);
+                }
+            }, 60000);
+
+            /* 5. beforeunload backup (complement to onDisconnect) */
+            window.addEventListener('beforeunload', function () {
+                userRef.update({
+                    isActive : false,
+                    lastSeen : Date.now()
+                });
+            });
+
+        });
+
+    })();
+    </script>
+
+    <!-- Bottom Nav active-state + ripple + hide-on-scroll -->
+    <script>
+    (function () {
+        var path     = window.location.pathname.split('/').pop() || 'index.html';
+        var map      = { 'index.html': 'bnav-home', '': 'bnav-home', 'mylist.html': 'bnav-mylist', 'profile.html': 'bnav-profile', 'watch.html': 'bnav-home' };
+        var activeId = map[path];
+        if (activeId) {
+            document.querySelectorAll('.bottom-nav-item').forEach(function (el) { el.classList.remove('active'); });
+            var activeEl = document.getElementById(activeId);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        /* Ripple on tap */
+        document.querySelectorAll('.bottom-nav-item').forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                var wrap = item.querySelector('.bnav-icon-wrap'); if (!wrap) return;
+                var rip  = document.createElement('span'); rip.className = 'bnav-ripple';
+                var rect = wrap.getBoundingClientRect(), size = Math.max(rect.width, rect.height);
+                rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (e.clientY - rect.top - size / 2) + 'px;left:' + (e.clientX - rect.left - size / 2) + 'px';
+                wrap.style.position = 'relative'; wrap.style.overflow = 'hidden';
+                wrap.appendChild(rip);
+                rip.addEventListener('animationend', function () { rip.remove(); });
+            });
+        });
+
+        /* Hide-on-scroll */
+        var nav        = document.getElementById('bottomNav');
+        var lastScroll = window.pageYOffset;
+        var scrollReady = false;
+        setTimeout(function () { lastScroll = window.pageYOffset; scrollReady = true; }, 600);
+        window.addEventListener('scroll', function () {
+            if (!scrollReady) return;
+            var cur = window.pageYOffset;
+            if (cur <= 80)               { nav.style.transform = 'translateY(0)'; lastScroll = cur; return; }
+            if (cur > lastScroll + 6)    { nav.style.transform = 'translateY(110%)'; }
+            else if (cur < lastScroll - 6) { nav.style.transform = 'translateY(0)'; }
+            lastScroll = cur;
+        }, { passive: true });
+    })();
+    </script>
+
+
+    <!-- ============================================================
+         STREAMIFY — MULTI-SIGNAL ANTI-ADBLOCK DETECTOR
+         ============================================================ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /*
+         * This is the same layered strategy used on the rebuilt index:
+         * DOM bait + real ad-slot inspection + script presence +
+         * dynamic script/image/iframe probes + fetch network probes +
+         * Resource Timing + MutationObserver + periodic rechecks.
+         *
+         * No client-side system can distinguish every DNS outage from
+         * an ad filter with mathematical certainty, so several signals
+         * are combined before locking the page.
+         */
+
+        var CONFIG = {
+            initialDelay: 2200,
+            checkTimeout: 4000,
+            retryDelay: 1200,
+            periodicCheck: 15000,
+            visibilityRecheckDelay: 600,
+            minimumScoreDesktop: 4,
+            minimumScoreMobile: 4,
+
+            /*
+             * These are the actual ad hosts used on this watch page.
+             */
+            adHosts: [
+                'highperformanceformat.com',
+                'acscdn.com'
+            ],
+
+            /*
+             * Dedicated resource probes. Different resource types help
+             * expose DNS/privacy filters that treat scripts, images and
+             * frames differently.
+             */
+            testUrls: [
+                'https://www.highperformanceformat.com/favicon.ico',
+                'https://acscdn.com/favicon.ico'
+            ]
+        };
+
+        var overlay = null;
+        var retryButton = null;
+        var statusText = null;
+
+        var blocked = false;
+        var checking = false;
+        var observer = null;
+        var mutationTimer = null;
+
+        function initElements() {
+            overlay = document.getElementById('streamifyAdblockOverlay');
+            retryButton = document.getElementById('streamifyAdblockRetry');
+            statusText = document.getElementById('streamifyAdblockStatus');
+        }
+
+        function setStatus(message) {
+            if (!statusText) return;
+            statusText.textContent = message || '';
+            statusText.style.display = message ? 'block' : 'none';
+        }
+
+        function lockPage(message) {
+            if (!overlay) return;
+
+            overlay.classList.add('active');
+
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+
+            blocked = true;
+            setStatus(message || 'Advertising appears to be blocked.');
+        }
+
+        function unlockPage() {
+            if (!overlay) return;
+
+            overlay.classList.remove('active');
+
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+
+            blocked = false;
+            setStatus('');
+        }
+
+        /* ============================================================
+           SIGNAL 1 — Browser extension / CSS ad-bait detection
+           ============================================================ */
+        function baitTest() {
+            return new Promise(function (resolve) {
+
+                var bait = document.createElement('div');
+
+                bait.className =
+                    'adsbox ad ads advertisement advert ' +
+                    'ad-banner ad-container ad-unit ad-slot ' +
+                    'adsbygoogle text-ad native-ad sponsored-content';
+
+                bait.setAttribute('aria-hidden', 'true');
+
+                bait.style.cssText =
+                    'position:absolute!important;' +
+                    'left:-10000px!important;' +
+                    'top:-10000px!important;' +
+                    'width:300px!important;' +
+                    'height:250px!important;' +
+                    'display:block!important;' +
+                    'visibility:visible!important;' +
+                    'opacity:1!important;' +
+                    'pointer-events:none!important;';
+
+                document.body.appendChild(bait);
+
+                setTimeout(function () {
+
+                    var style = window.getComputedStyle(bait);
+                    var rect = bait.getBoundingClientRect();
+
+                    var hidden =
+                        bait.offsetWidth === 0 ||
+                        bait.offsetHeight === 0 ||
+                        rect.width === 0 ||
+                        rect.height === 0 ||
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        parseFloat(style.opacity || '1') === 0;
+
+                    if (bait.parentNode) {
+                        bait.parentNode.removeChild(bait);
+                    }
+
+                    resolve(hidden);
+
+                }, 180);
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 2 — Actual watch-page ad slots
+           ============================================================ */
+        function realAdSlotTest() {
+
+            var slots = document.querySelectorAll('.watch-ad');
+
+            if (!slots.length) {
+                return {
+                    count: 0,
+                    affected: 0
+                };
+            }
+
+            var affected = 0;
+
+            slots.forEach(function (slot) {
+
+                var style = window.getComputedStyle(slot);
+                var rect = slot.getBoundingClientRect();
+
+                var hidden =
+                    style.display === 'none' ||
+                    style.visibility === 'hidden' ||
+                    rect.width === 0 ||
+                    rect.height === 0 ||
+                    parseFloat(style.opacity || '1') === 0;
+
+                if (hidden) {
+                    affected++;
+                }
+            });
+
+            return {
+                count: slots.length,
+                affected: affected
+            };
+        }
+
+        /* ============================================================
+           SIGNAL 3 — Provider script presence
+           ============================================================ */
+        function providerScriptTest() {
+
+            var scripts = Array.prototype.slice.call(
+                document.scripts || []
+            );
+
+            var matched = scripts.filter(function (script) {
+
+                var src = (script.src || '').toLowerCase();
+
+                return CONFIG.adHosts.some(function (host) {
+                    return src.indexOf(host) !== -1;
+                });
+
+            });
+
+            return {
+                missing: matched.length === 0,
+                count: matched.length
+            };
+        }
+
+        /* ============================================================
+           SIGNALS 4/5/6 — Dynamic script/image/iframe probes
+           ============================================================ */
+        function resourceProbe(url, type, timeoutMs) {
+
+            return new Promise(function (resolve) {
+
+                var finished = false;
+                var timer = null;
+                var element = null;
+
+                function finish(result) {
+
+                    if (finished) return;
+                    finished = true;
+
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+
+                    if (element && element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+
+                    resolve(result);
+                }
+
+                var probeUrl =
+                    url +
+                    (url.indexOf('?') === -1 ? '?' : '&') +
+                    'streamify_probe=' +
+                    Date.now() +
+                    '_' +
+                    Math.random().toString(36).slice(2);
+
+                if (type === 'script') {
+
+                    element = document.createElement('script');
+                    element.async = true;
+                    element.src = probeUrl;
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.style.display = 'none';
+                    document.head.appendChild(element);
+
+                } else if (type === 'image') {
+
+                    element = new Image();
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.src = probeUrl;
+
+                } else if (type === 'iframe') {
+
+                    element = document.createElement('iframe');
+
+                    element.width = '1';
+                    element.height = '1';
+                    element.setAttribute('aria-hidden', 'true');
+
+                    element.style.cssText =
+                        'position:absolute;' +
+                        'left:-9999px;' +
+                        'top:-9999px;' +
+                        'width:1px;' +
+                        'height:1px;' +
+                        'border:0;' +
+                        'opacity:.01;' +
+                        'pointer-events:none;';
+
+                    element.onload = function () {
+                        finish({ ok: true, type: type });
+                    };
+
+                    element.onerror = function () {
+                        finish({ ok: false, type: type, error: true });
+                    };
+
+                    element.src = probeUrl;
+                    document.body.appendChild(element);
+                }
+
+                timer = setTimeout(function () {
+                    finish({
+                        ok: false,
+                        type: type,
+                        timeout: true
+                    });
+                }, timeoutMs || CONFIG.checkTimeout);
+
+            });
+        }
+
+        function dynamicAdResourceTest() {
+
+            return Promise.all([
+                resourceProbe(CONFIG.testUrls[0], 'script'),
+                resourceProbe(CONFIG.testUrls[1], 'image'),
+                resourceProbe(CONFIG.testUrls[0], 'iframe')
+            ]).then(function (results) {
+
+                return {
+                    results: results,
+                    failed: results.filter(function (r) {
+                        return r && r.ok === false;
+                    }).length
+                };
+
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 7 — Fetch / DNS / network failure
+           ============================================================ */
+        function fetchNetworkTest() {
+
+            if (!window.fetch) {
+                return Promise.resolve({
+                    failed: 0,
+                    skipped: true
+                });
+            }
+
+            return Promise.all(
+                CONFIG.testUrls.map(function (url) {
+
+                    var probeUrl =
+                        url +
+                        (url.indexOf('?') === -1 ? '?' : '&') +
+                        'streamify_fetch_probe=' +
+                        Date.now() +
+                        '_' +
+                        Math.random().toString(36).slice(2);
+
+                    return fetch(probeUrl, {
+                        method: 'GET',
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        credentials: 'omit'
+                    }).then(function () {
+                        return { ok: true };
+                    }).catch(function () {
+                        return { ok: false };
+                    });
+
+                })
+            ).then(function (results) {
+
+                return {
+                    failed: results.filter(function (r) {
+                        return !r.ok;
+                    }).length,
+                    results: results
+                };
+
+            });
+        }
+
+        /* ============================================================
+           SIGNAL 8 — Resource Timing
+           ============================================================ */
+        function resourceTimingTest() {
+
+            if (
+                !window.performance ||
+                !performance.getEntriesByType
+            ) {
+                return {
+                    available: false,
+                    failed: false,
+                    matched: 0
+                };
+            }
+
+            var entries =
+                performance.getEntriesByType('resource') || [];
+
+            var matched = entries.filter(function (entry) {
+
+                var name =
+                    String(entry.name || '').toLowerCase();
+
+                return CONFIG.adHosts.some(function (host) {
+                    return name.indexOf(host) !== -1;
+                });
+
+            });
+
+            return {
+                available: true,
+                failed: matched.length === 0,
+                matched: matched.length
+            };
+        }
+
+        /* ============================================================
+           SIGNAL 9 — Watch for ad slots being hidden later
+           ============================================================ */
+        function startMutationMonitor() {
+
+            if (!window.MutationObserver || observer) {
+                return;
+            }
+
+            observer = new MutationObserver(function () {
+
+                clearTimeout(mutationTimer);
+
+                mutationTimer = setTimeout(function () {
+
+                    if (blocked || checking) {
+                        return;
+                    }
+
+                    var slotState = realAdSlotTest();
+
+                    if (slotState.affected >= 1) {
+                        runDetection();
+                    }
+
+                }, 500);
+
+            });
+
+            observer.observe(document.documentElement, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        }
+
+        /* ============================================================
+           SCORE ENGINE
+           ============================================================ */
+        function runDetection() {
+
+            if (checking || !document.body) {
+                return Promise.resolve(false);
+            }
+
+            checking = true;
+
+            return Promise.all([
+                baitTest(),
+                Promise.resolve(realAdSlotTest()),
+                Promise.resolve(providerScriptTest()),
+                dynamicAdResourceTest(),
+                fetchNetworkTest(),
+                Promise.resolve(resourceTimingTest())
+            ]).then(function (results) {
+
+                var score = 0;
+
+                var baitBlocked = results[0] === true;
+                var slots = results[1] || { count: 0, affected: 0 };
+                var scripts = results[2] || { missing: false, count: 0 };
+                var dynamic = results[3] || { failed: 0 };
+                var fetchResult = results[4] || { failed: 0 };
+                var timing = results[5] || { available: false };
+
+                var reasons = [];
+
+                if (baitBlocked) {
+                    score += 2;
+                    reasons.push('browser filter');
+                }
+
+                /*
+                 * The page contains two real advertising containers.
+                 * Collapsing one is suspicious but not enough alone.
+                 */
+                if (
+                    slots.count >= 2 &&
+                    slots.affected >= Math.ceil(slots.count * 0.5)
+                ) {
+                    score += 2;
+                    reasons.push('ad slots hidden');
+
+                } else if (
+                    slots.count === 1 &&
+                    slots.affected === 1
+                ) {
+                    score += 1;
+                    reasons.push('ad slot hidden');
+                }
+
+                if (scripts.missing) {
+                    score += 2;
+                    reasons.push('ad script missing');
+                }
+
+                if (dynamic.failed >= 2) {
+                    score += 2;
+                    reasons.push('ad resources blocked');
+
+                } else if (dynamic.failed === 1) {
+                    score += 1;
+                    reasons.push('ad resource failed');
+                }
+
+                if (fetchResult.failed >= 2) {
+                    score += 2;
+                    reasons.push('ad network blocked');
+
+                } else if (fetchResult.failed === 1) {
+                    score += 1;
+                }
+
+                if (
+                    timing.available &&
+                    timing.failed &&
+                    scripts.count > 0
+                ) {
+                    score += 1;
+                    reasons.push('timing missing');
+                }
+
+                var threshold =
+                    window.innerWidth <= 600
+                        ? CONFIG.minimumScoreMobile
+                        : CONFIG.minimumScoreDesktop;
+
+                if (score >= threshold) {
+
+                    lockPage(
+                        'Advertising appears to be blocked. ' +
+                        'Please allow ads for Streamify and try again.'
+                    );
+
+                    return true;
+                }
+
+                if (blocked) {
+                    unlockPage();
+                }
+
+                return false;
+
+            }).catch(function (error) {
+
+                try {
+                    console.debug(
+                        '[Streamify] anti-adblock check failed:',
+                        error
+                    );
+                } catch (_) {}
+
+                return false;
+
+            }).finally(function () {
+                checking = false;
+            });
+        }
+
+        function retryDetection() {
+
+            if (!retryButton) {
+                return;
+            }
+
+            retryButton.disabled = true;
+
+            retryButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i>' +
+                '&nbsp; Checking…';
+
+            setStatus(
+                'Checking your browser and ad connection…'
+            );
+
+            setTimeout(function () {
+
+                runDetection().then(function (isBlocked) {
+
+                    if (isBlocked) {
+
+                        retryButton.disabled = false;
+
+                        retryButton.innerHTML =
+                            '<i class="fas fa-rotate-right"></i>' +
+                            '&nbsp; I\'ve Disabled It — Continue';
+
+                    } else {
+
+                        setStatus('All good. Reloading…');
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 350);
+                    }
+
+                }).catch(function () {
+
+                    retryButton.disabled = false;
+
+                    retryButton.innerHTML =
+                        '<i class="fas fa-rotate-right"></i>' +
+                        '&nbsp; I\'ve Disabled It — Continue';
+
+                    setStatus('');
+                });
+
+            }, CONFIG.retryDelay);
+        }
+
+        function initialize() {
+
+            initElements();
+
+            if (!overlay || !retryButton) {
+                return;
+            }
+
+            retryButton.addEventListener(
+                'click',
+                retryDetection
+            );
+
+            startMutationMonitor();
+
+            setTimeout(function () {
+                runDetection();
+            }, CONFIG.initialDelay);
+
+            setInterval(function () {
+
+                if (!blocked) {
+                    runDetection();
+                }
+
+            }, CONFIG.periodicCheck);
+
+            document.addEventListener(
+                'visibilitychange',
+                function () {
+
+                    if (!document.hidden && !blocked) {
+                        setTimeout(
+                            runDetection,
+                            CONFIG.visibilityRecheckDelay
+                        );
+                    }
+
+                }
+            );
+
+            window.addEventListener(
+                'pageshow',
+                function () {
+
+                    if (!blocked) {
+                        setTimeout(
+                            runDetection,
+                            CONFIG.visibilityRecheckDelay
+                        );
+                    }
+
+                }
+            );
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener(
+                'DOMContentLoaded',
+                initialize
+            );
+        } else {
+            initialize();
+        }
+
+    })();
+    </script>
+
+    <!-- ============================================================
+         STREAMIFY — FRIEND SHARE CONTROLLER
+         ============================================================ -->
+    <script>
+    (function () {
+        'use strict';
+
+        var SHARE_URL = 'https://streamify.website/';
+        var DISMISS_KEY = 'streamify_share_prompt_dismissed';
+        var SHARED_KEY = 'streamify_share_prompt_shared';
+
+        /*
+         * 3000 ms = 3 seconds after the page becomes ready.
+         */
+        var SHOW_DELAY = 3000;
+
+        var promptEl;
+        var shareButton;
+        var copyButton;
+        var closeButton;
+        var noteEl;
+
+        function getElements() {
+            promptEl = document.getElementById('streamifySharePrompt');
+            shareButton = document.getElementById('streamifyShareNow');
+            copyButton = document.getElementById('streamifyCopyLink');
+            closeButton = document.getElementById('streamifyShareClose');
+            noteEl = document.getElementById('streamifyShareNote');
+        }
+
+        function showPrompt() {
+            if (!promptEl) return;
+
+            /*
+             * Don't repeatedly nag users who dismissed or completed it.
+             */
+            try {
+                if (localStorage.getItem(DISMISS_KEY) === '1') return;
+                if (localStorage.getItem(SHARED_KEY) === '1') return;
+            } catch (_) {}
+
+            promptEl.classList.add('visible');
+        }
+
+        function hidePrompt(markDismissed) {
+            if (!promptEl) return;
+
+            promptEl.classList.remove('visible');
+
+            if (markDismissed) {
+                try {
+                    localStorage.setItem(DISMISS_KEY, '1');
+                } catch (_) {}
+            }
+        }
+
+        function setNote(message, success) {
+            if (!noteEl) return;
+
+            noteEl.textContent = message;
+            noteEl.style.color = success
+                ? 'rgba(255,255,255,.58)'
+                : 'rgba(255,255,255,.28)';
+        }
+
+        function shareNative() {
+            var shareData = {
+                title: 'Streamify',
+                text: 'Check out Streamify — a free place to discover movies and TV shows.',
+                url: SHARE_URL
+            };
+
+            if (!navigator.share) {
+                return false;
+            }
+
+            navigator.share(shareData).then(function () {
+
+                try {
+                    localStorage.setItem(SHARED_KEY, '1');
+                } catch (_) {}
+
+                setNote('Thanks for sharing Streamify ❤️', true);
+
+                setTimeout(function () {
+                    hidePrompt(false);
+                }, 900);
+
+            }).catch(function () {
+                /*
+                 * Closing/cancelling the native share sheet is not treated
+                 * as a successful share.
+                 */
+            });
+
+            return true;
+        }
+
+        function copyLink() {
+            var finished = false;
+
+            function success() {
+                if (finished) return;
+                finished = true;
+
+                try {
+                    localStorage.setItem(SHARED_KEY, '1');
+                } catch (_) {}
+
+                if (copyButton) {
+                    copyButton.innerHTML =
+                        '<i class="fas fa-check"></i>&nbsp; Link Copied';
+                }
+
+                setNote(
+                    'Link copied — send it to a friend who would enjoy Streamify.',
+                    true
+                );
+
+                setTimeout(function () {
+                    hidePrompt(false);
+                }, 1200);
+            }
+
+            function fallbackCopy() {
+                var textarea = document.createElement('textarea');
+
+                textarea.value = SHARE_URL;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                textarea.style.pointerEvents = 'none';
+
+                document.body.appendChild(textarea);
+                textarea.select();
+                textarea.setSelectionRange(0, textarea.value.length);
+
+                try {
+                    if (document.execCommand('copy')) {
+                        success();
+                    } else {
+                        setNote(
+                            'Copy failed. You can share streamify.website manually.',
+                            false
+                        );
+                    }
+                } catch (_) {
+                    setNote(
+                        'Copy failed. You can share streamify.website manually.',
+                        false
+                    );
+                }
+
+                textarea.remove();
+            }
+
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+                navigator.clipboard.writeText(SHARE_URL)
+                    .then(success)
+                    .catch(fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
+        }
+
+        function handleShare() {
+            /*
+             * Phones/supported browsers get their normal share sheet.
+             * Others fall back to copying the URL.
+             */
+            if (!shareNative()) {
+                copyLink();
+            }
+        }
+
+        function initialize() {
+            getElements();
+
+            if (
+                !promptEl ||
+                !shareButton ||
+                !copyButton ||
+                !closeButton
+            ) {
+                return;
+            }
+
+            shareButton.addEventListener('click', handleShare);
+            copyButton.addEventListener('click', copyLink);
+
+            closeButton.addEventListener('click', function () {
+                hidePrompt(true);
+            });
+
+            /*
+             * Show exactly 3 seconds after initialization.
+             */
+            setTimeout(showPrompt, SHOW_DELAY);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener(
+                'DOMContentLoaded',
+                initialize
+            );
+        } else {
+            initialize();
+        }
+
+    })();
+    </script>
+
+</body>
+</html>

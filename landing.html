@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070709">
+<meta name="description" content="Streamify — your cinematic home for movies and series. Discover trending entertainment, explore the library and start watching.">
+<title>Streamify — Your World of Movies & Series</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1KPZ88GRHK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1KPZ88GRHK');
+</script>
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+    --bg:#060608;
+    --bg2:#0b0b10;
+    --card:#101016;
+    --text:#fff;
+    --muted:#a6a6b0;
+    --soft:#74747f;
+    --red:#e50914;
+    --red2:#ff3b45;
+    --line:rgba(255,255,255,.09);
+    --glass:rgba(15,15,21,.68);
+    --max:1240px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,sans-serif;
+    overflow-x:hidden;
+}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-2;
+    background:
+      radial-gradient(circle at 75% 15%,rgba(229,9,20,.11),transparent 30%),
+      radial-gradient(circle at 15% 55%,rgba(108,75,255,.08),transparent 27%);
+}
+
+/* ---------- NAV ---------- */
+.nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:1000;
+    transition:.35s ease;
+}
+.nav.scrolled{
+    background:rgba(6,6,8,.82);
+    backdrop-filter:blur(22px) saturate(150%);
+    border-bottom:1px solid var(--line);
+}
+.nav-inner{
+    max-width:var(--max);
+    height:78px;
+    margin:auto;
+    padding:0 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:900;
+    letter-spacing:2.8px;
+    font-size:21px;
+}
+.brand-mark{
+    width:30px;height:30px;
+    display:grid;place-items:center;
+    border-radius:9px;
+    background:linear-gradient(145deg,#ff3039,#a90009);
+    box-shadow:0 8px 25px rgba(229,9,20,.28);
+    font-size:13px;
+}
+.nav-links{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    color:#bdbdc5;
+    font-size:13px;
+    font-weight:700;
+}
+.nav-links a{transition:.2s}
+.nav-links a:hover{color:#fff}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.nav-share{
+    width:42px;height:42px;
+    display:grid;place-items:center;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.045);
+    color:#fff;
+    border-radius:50%;
+    cursor:pointer;
+    transition:.2s;
+}
+.nav-share:hover{transform:translateY(-2px);background:rgba(255,255,255,.09)}
+.nav-cta{
+    padding:11px 17px;
+    border-radius:10px;
+    background:#fff;
+    color:#09090b;
+    font-size:12px;
+    font-weight:900;
+    transition:.2s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,255,255,.12)}
+
+/* ---------- HERO ---------- */
+.hero{
+    min-height:820px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    isolation:isolate;
+}
+.hero-bg{
+    position:absolute;
+    inset:0;
+    z-index:-3;
+    background:
+      linear-gradient(90deg,#060608 0%,rgba(6,6,8,.82) 26%,rgba(6,6,8,.35) 58%,rgba(6,6,8,.74) 100%),
+      linear-gradient(0deg,#060608 0%,transparent 27%,rgba(0,0,0,.18) 100%),
+      url("https://m.media-amazon.com/images/I/817rFOdsCFL._AC_UF894,1000_QL80_.jpg")
+      center/cover no-repeat;
+    transform:scale(1.03);
+}
+.hero-glow{
+    position:absolute;
+    z-index:-2;
+    width:620px;height:620px;
+    right:-100px;top:120px;
+    background:radial-gradient(circle,rgba(229,9,20,.22),transparent 68%);
+    filter:blur(10px);
+}
+.hero-content{
+    width:min(var(--max),100%);
+    margin:auto;
+    padding:150px 26px 90px;
+}
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.045);
+    backdrop-filter:blur(12px);
+    color:#ddd;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1.6px;
+    text-transform:uppercase;
+}
+.eyebrow i{color:#ff4650}
+.hero h1{
+    max-width:780px;
+    margin:24px 0 20px;
+    font-family:Manrope,Inter,sans-serif;
+    font-size:clamp(48px,7.2vw,92px);
+    line-height:.94;
+    letter-spacing:-5px;
+    font-weight:900;
+}
+.hero h1 span{
+    background:linear-gradient(110deg,#fff 0%,#fff 45%,#ff9da1 80%,#e50914 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+.hero-copy{
+    max-width:590px;
+    color:#b8b8c2;
+    line-height:1.75;
+    font-size:16px;
+}
+.hero-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:30px;
+}
+.btn{
+    min-height:52px;
+    padding:0 21px;
+    border-radius:12px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    transition:.25s;
+}
+.btn-primary{
+    background:linear-gradient(135deg,#f51a25,#b4060d);
+    color:#fff;
+    box-shadow:0 15px 42px rgba(229,9,20,.25);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(229,9,20,.35)}
+.btn-ghost{
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.055);
+    backdrop-filter:blur(14px);
+    color:#fff;
+}
+.btn-ghost:hover{transform:translateY(-3px);background:rgba(255,255,255,.09)}
+.hero-proof{
+    margin-top:38px;
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+}
+.proof{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#92929c;
+    font-size:11px;
+    font-weight:700;
+}
+.proof i{color:#e50914}
+.scroll-hint{
+    position:absolute;
+    left:50%;
+    bottom:25px;
+    transform:translateX(-50%);
+    color:#707079;
+    font-size:9px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+/* ---------- FLOATING SHOWCASE ---------- */
+.showcase-wrap{
+    max-width:var(--max);
+    margin:-110px auto 0;
+    padding:0 26px;
+    position:relative;
+    z-index:5;
+}
+.showcase{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:14px;
+}
+.showcase-card{
+    min-height:260px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    overflow:hidden;
+    position:relative;
+    background:#101014;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+.showcase-card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 68%);
+}
+.showcase-card.large{
+    background:
+      linear-gradient(90deg,rgba(0,0,0,.75),transparent),
+      url("https://media.themoviedb.org/t/p/w440_and_h660_face/bRwnj8WEKBCvmfeUNOukJPwB43K.jpg") center/cover;
+}
+.showcase-card.small{
+    background:
+      linear-gradient(90deg,rgba(0,0,0,.75),transparent),
+      url("https://media.themoviedb.org/t/p/w440_and_h660_face/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg?auto=format&fit=crop&w=1000&q=85") center/cover;
+}
+.showcase-content{
+    position:absolute;
+    z-index:2;
+    left:25px;right:25px;bottom:22px;
+}
+.showcase-label{
+    color:#ff6870;
+    font-size:9px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    font-weight:900;
+}
+.showcase-title{
+    margin-top:5px;
+    font-size:24px;
+    font-weight:900;
+}
+
+/* ---------- SECTIONS ---------- */
+.section{
+    max-width:var(--max);
+    margin:auto;
+    padding:110px 26px 20px;
+}
+.section-head{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:35px;
+}
+.kicker{
+    color:#ef4a52;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+.section h2{
+    font-family:Manrope,Inter,sans-serif;
+    font-size:clamp(28px,4vw,44px);
+    letter-spacing:-2px;
+    line-height:1;
+}
+.section-desc{
+    max-width:460px;
+    color:#85858f;
+    line-height:1.7;
+    font-size:13px;
+}
+.features{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+.feature{
+    min-height:210px;
+    padding:25px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    position:relative;
+    overflow:hidden;
+    transition:.3s;
+}
+.feature:hover{
+    transform:translateY(-6px);
+    border-color:rgba(229,9,20,.3);
+    background:linear-gradient(145deg,rgba(229,9,20,.09),rgba(255,255,255,.02));
+}
+.feature-icon{
+    width:45px;height:45px;
+    border-radius:13px;
+    display:grid;place-items:center;
+    color:#fff;
+    background:linear-gradient(145deg,#ed1722,#98050c);
+    box-shadow:0 12px 30px rgba(229,9,20,.2);
+    margin-bottom:25px;
+}
+.feature h3{font-size:16px;margin-bottom:9px}
+.feature p{font-size:12px;line-height:1.65;color:#81818b}
+.feature-no{
+    position:absolute;
+    right:18px;top:12px;
+    color:rgba(255,255,255,.035);
+    font-size:72px;
+    font-weight:900;
+}
+
+/* ---------- CINEMA BAND ---------- */
+.cinema{
+    margin-top:100px;
+    min-height:560px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+}
+.cinema-bg{
+    position:absolute;inset:0;z-index:-2;
+    background:
+      linear-gradient(90deg,#060608 0%,rgba(6,6,8,.78) 35%,rgba(6,6,8,.3) 70%,#060608 100%),
+      url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2200&q=82") center/cover;
+    filter:saturate(.82);
+}
+.cinema-inner{
+    max-width:var(--max);
+    width:100%;
+    margin:auto;
+    padding:90px 26px;
+}
+.cinema h2{
+    max-width:700px;
+    font-family:Manrope;
+    font-size:clamp(35px,5vw,65px);
+    line-height:.98;
+    letter-spacing:-3px;
+}
+.cinema p{
+    max-width:560px;
+    margin-top:18px;
+    color:#aaaab3;
+    line-height:1.8;
+    font-size:14px;
+}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:25px}
+.pill{
+    padding:8px 11px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.045);
+    color:#aaaab2;
+    font-size:10px;
+    font-weight:700;
+}
+
+/* ---------- APP CTA ---------- */
+.download{
+    max-width:var(--max);
+    margin:auto;
+    padding:110px 26px;
+}
+.download-card{
+    border:1px solid rgba(229,9,20,.22);
+    border-radius:28px;
+    overflow:hidden;
+    position:relative;
+    background:
+      radial-gradient(circle at 80% 50%,rgba(229,9,20,.18),transparent 35%),
+      linear-gradient(135deg,#151116,#09090c 60%);
+    padding:65px;
+}
+.download-card::before{
+    content:"";
+    position:absolute;
+    width:360px;height:360px;
+    right:-120px;top:-120px;
+    border:1px solid rgba(229,9,20,.16);
+    border-radius:50%;
+    box-shadow:0 0 0 45px rgba(229,9,20,.025),0 0 0 90px rgba(229,9,20,.018);
+}
+.download-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:40px;
+    align-items:center;
+}
+.download h2{
+    font-family:Manrope;
+    font-size:clamp(32px,5vw,58px);
+    line-height:1;
+    letter-spacing:-3px;
+}
+.download p{
+    margin-top:16px;
+    color:#9999a3;
+    max-width:580px;
+    line-height:1.7;
+    font-size:13px;
+}
+.app-badge{
+    margin-top:25px;
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 15px;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:13px;
+    background:rgba(255,255,255,.045);
+}
+.app-badge i{font-size:26px}
+.app-badge span{display:flex;flex-direction:column}
+.app-badge small{font-size:8px;color:#888;letter-spacing:.6px}
+.app-badge strong{font-size:12px}
+
+/* ---------- SHARE ---------- */
+.share{
+    max-width:var(--max);
+    margin:auto;
+    padding:20px 26px 110px;
+}
+.share-card{
+    text-align:center;
+    padding:55px 25px;
+    border:1px solid var(--line);
+    border-radius:25px;
+    background:
+      radial-gradient(circle at 50% 0,rgba(229,9,20,.12),transparent 45%),
+      rgba(255,255,255,.025);
+}
+.share-card h2{
+    font-family:Manrope;
+    font-size:clamp(28px,4vw,45px);
+    letter-spacing:-2px;
+}
+.share-card p{
+    max-width:560px;
+    margin:14px auto 25px;
+    color:#898992;
+    font-size:13px;
+    line-height:1.7;
+}
+
+/* ---------- FOOTER ---------- */
+footer{
+    border-top:1px solid var(--line);
+    padding:35px 26px 45px;
+}
+.footer-inner{
+    max-width:var(--max);
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:25px;
+}
+.footer-brand{font-weight:900;letter-spacing:2px}
+.footer-copy{font-size:10px;color:#62626b;line-height:1.6}
+.footer-links{display:flex;gap:18px;color:#777780;font-size:11px}
+.footer-links a:hover{color:#fff}
+
+/* ---------- MODAL ---------- */
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    display:none;
+    place-items:center;
+    padding:20px;
+    background:rgba(0,0,0,.68);
+    backdrop-filter:blur(12px);
+}
+.modal.open{display:grid}
+.modal-card{
+    width:min(470px,100%);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:22px;
+    padding:28px;
+    background:linear-gradient(145deg,#17171e,#0a0a0e);
+    box-shadow:0 30px 100px rgba(0,0,0,.65);
+}
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:center;
+}
+.modal-head h3{font-size:20px}
+.modal-close{
+    width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line);
+    color:#aaa;background:rgba(255,255,255,.04);
+    cursor:pointer;
+}
+.share-options{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin-top:22px;
+}
+.share-option{
+    min-height:70px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+    color:#fff;
+    border-radius:13px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-size:10px;
+    font-weight:800;
+}
+.share-option i{font-size:20px;color:#ff4b53}
+.copy-row{display:flex;gap:8px;margin-top:12px}
+.copy-row input{
+    min-width:0;flex:1;
+    border:1px solid var(--line);
+    border-radius:11px;
+    background:#08080b;
+    color:#aaa;
+    padding:0 12px;
+    font-size:11px;
+}
+.copy-row button{
+    border:0;border-radius:11px;
+    padding:0 16px;
+    background:#e50914;color:#fff;
+    font-weight:800;font-size:11px;
+    cursor:pointer;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+    .nav-links{display:none}
+    .features{grid-template-columns:repeat(2,1fr)}
+    .showcase{grid-template-columns:1fr}
+    .showcase-card.small{min-height:220px}
+    .download-grid{grid-template-columns:1fr}
+    .download-card{padding:45px 30px}
+}
+@media(max-width:600px){
+    .nav-inner{height:68px;padding:0 17px}
+    .nav-cta{display:none}
+    .brand{font-size:18px}
+    .hero{min-height:740px}
+    .hero-content{padding:125px 19px 85px}
+    .hero h1{letter-spacing:-3px;font-size:50px}
+    .hero-copy{font-size:13px}
+    .hero-proof{gap:13px}
+    .showcase-wrap{margin:-55px auto 0;padding:0 16px}
+    .showcase-card{min-height:210px}
+    .section{padding:80px 17px 15px}
+    .features{grid-template-columns:1fr}
+    .feature{min-height:175px}
+    .cinema{min-height:510px}
+    .cinema-inner{padding:70px 19px}
+    .download{padding:80px 17px}
+    .download-card{padding:38px 22px}
+    .share{padding:10px 17px 80px}
+    .footer-inner{align-items:flex-start;flex-direction:column}
+    .footer-links{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#" class="brand" aria-label="Streamify Home">
+            <span class="brand-mark"><i class="fa-solid fa-play"></i></span>
+            STREAMIFY
+        </a>
+
+        <nav class="nav-links" aria-label="Landing page navigation">
+            <a href="#features">Experience</a>
+            <a href="#cinema">Why Streamify</a>
+            <a href="#download">App</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button class="nav-share" id="navShare" aria-label="Share Streamify">
+                <i class="fa-solid fa-share-nodes"></i>
+            </button>
+            <a class="nav-cta" href="https://streamify.website/" target="_blank" rel="noopener">
+                Open Website
+            </a>
+        </div>
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+        <div class="eyebrow">
+            <i class="fa-solid fa-circle-play"></i>
+            ENTER THE STREAMIFY UNIVERSE
+        </div>
+
+        <h1>Your Streaming<br><span>Journey</span><br>starts here.</h1>
+
+        <p class="hero-copy">
+            Streamify is an Premium platform where you can watch Millions of Movies/Series in 4k quality,lightning speed 
+            for free without any ads or subscription.
+    
+        </p>
+
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="https://streamify.website/" target="_blank" rel="noopener">
+                <i class="fa-solid fa-play"></i> Open Website
+            </a>
+            <a class="btn btn-ghost" href="#download">
+                <i class="fa-brands fa-android"></i> Get the App
+            </a>
+        </div>
+
+        <div class="hero-proof">
+            <div class="proof"><i class="fa-solid fa-film"></i> Movies & Series</div>
+            <div class="proof"><i class="fa-solid fa-bolt"></i> Built for binge nights</div>
+            <div class="proof"><i class="fa-solid fa-mobile-screen-button"></i> Mobile friendly</div>
+        </div>
+    </div>
+
+    <div class="scroll-hint">Scroll to explore</div>
+</section>
+
+<section class="showcase-wrap" aria-label="Streamify showcase">
+    <div class="showcase">
+        <article class="showcase-card large">
+            <div class="showcase-content">
+                <div class="showcase-label">Trending Movies</div>
+                <div class="showcase-title">Watch Movies in crystal clear quality.</div>
+            </div>
+        </article>
+        <article class="showcase-card small">
+            <div class="showcase-content">
+                <div class="showcase-label">One place</div>
+                <div class="showcase-title">More to discover.</div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="section" id="features">
+    <div class="section-head">
+        <div>
+            <div class="kicker">The Streamify experience</div>
+            <h2>Made for people<br>who love Premium Experience.</h2>
+        </div>
+        <p class="section-desc">
+            Everything is designed around one simple idea: make finding something
+            great to watch feel as good as watching it.
+        </p>
+    </div>
+
+    <div class="features">
+        <article class="feature">
+            <span class="feature-no">01</span>
+            <div class="feature-icon"><i class="fa-solid fa-compass"></i></div>
+            <h3>Discover faster</h3>
+            <p>Trending picks, fresh releases and curated categories help you get from “what should I watch?” to play in seconds.</p>
+        </article>
+
+        <article class="feature">
+            <span class="feature-no">02</span>
+            <div class="feature-icon"><i class="fa-solid fa-clapperboard"></i></div>
+            <h3>Movies & series</h3>
+            <p>Jump between films, TV shows, anime, dramas and different genres without losing the cinematic feel.</p>
+        </article>
+
+        <article class="feature">
+            <span class="feature-no">03</span>
+            <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <h3>One clean home</h3>
+            <p>A focused interface with the content taking center stage — fewer distractions, more time watching.</p>
+        </article>
+
+        <article class="feature">
+            <span class="feature-no">04</span>
+            <div class="feature-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+            <h3>Watch your way</h3>
+            <p>Designed to feel great across phones, tablets, laptops and desktop screens, wherever your movie night happens.</p>
+        </article>
+    </div>
+</section>
+
+<section class="cinema" id="cinema">
+    <div class="cinema-bg"></div>
+    <div class="cinema-inner">
+        <div class="kicker">A streaming destination</div>
+        <h2>From a five-minute break to an all-night binge.</h2>
+        <p>
+            Streamify brings your entertainment into one cinematic space.
+            Browse by mood, genre or what everyone is talking about, then settle
+            in and press play.
+        </p>
+
+        <div class="pills">
+            <span class="pill">Action</span>
+            <span class="pill">Comedy</span>
+            <span class="pill">Drama</span>
+            <span class="pill">Thriller</span>
+            <span class="pill">Romance</span>
+            <span class="pill">Sci-Fi</span>
+            <span class="pill">Anime</span>
+            <span class="pill">K-Drama</span>
+            <span class="pill">Bollywood</span>
+            <span class="pill">Hollywood</span>
+        </div>
+    </div>
+</section>
+
+<section class="download" id="download">
+    <div class="download-card">
+        <div class="download-grid">
+            <div>
+                <div class="kicker">Take Streamify with you</div>
+                <h2>Your watchlist.<br>Your screen.<br>Your night.</h2>
+                <p>
+                    Open the Streamify app experience for a faster, more focused
+                    way to reach your entertainment. Tap below to get started.
+                </p>
+
+                <a class="app-badge" href="https://dl.dropboxusercontent.com/scl/fi/2ups5vx05uyv61ws0f1rt/Streamify.apk?rlkey=rg62ygqp1ugh1l7d5f8324ase&st=ho24y0if&dl=0" target="_blank" rel="noopener" aria-label="Open Streamify App">
+                    <i class="fa-brands fa-android"></i>
+                    <span>
+                        <small>AVAILABLE FOR</small>
+                        <strong>ANDROID APP</strong>
+                    </span>
+                </a>
+            </div>
+
+            <a class="btn btn-primary" href="https://dl.dropboxusercontent.com/scl/fi/2ups5vx05uyv61ws0f1rt/Streamify.apk?rlkey=rg62ygqp1ugh1l7d5f8324ase&st=ho24y0if&dl=0" target="_blank" rel="noopener">
+                <i class="fa-solid fa-download"></i>
+                Download App
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="share">
+    <div class="share-card">
+        <div class="kicker">Good movies are better together</div>
+        <h2>Found something worth watching?</h2>
+        <p>
+            Send Streamify to your movie-obsessed friends and make the next
+            movie night a group decision.
+        </p>
+        <button class="btn btn-primary" id="shareMain">
+            <i class="fa-solid fa-share-nodes"></i>
+            Share Streamify
+        </button>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-brand">STREAMIFY</div>
+            <div class="footer-copy">Movies. Series. Stories worth staying up for.</div>
+        </div>
+
+        <div class="footer-links">
+            <a href="https://streamify.website/" target="_blank" rel="noopener">Website</a>
+            <a href="https://dl.dropboxusercontent.com/scl/fi/2ups5vx05uyv61ws0f1rt/Streamify.apk?rlkey=rg62ygqp1ugh1l7d5f8324ase&st=ho24y0if&dl=0" target="_blank" rel="noopener">App</a>
+            <a href="#features">Experience</a>
+            <a href="#" id="footerShare">Share</a>
+        </div>
+    </div>
+</footer>
+
+<div class="modal" id="shareModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+        <div class="modal-head">
+            <h3 id="shareTitle">Share Streamify</h3>
+            <button class="modal-close" id="shareClose" aria-label="Close share dialog">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="share-options">
+            <button class="share-option" data-share="whatsapp">
+                <i class="fa-brands fa-whatsapp"></i>
+                WhatsApp
+            </button>
+            <button class="share-option" data-share="telegram">
+                <i class="fa-brands fa-telegram"></i>
+                Telegram
+            </button>
+            <button class="share-option" data-share="native">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                More
+            </button>
+        </div>
+
+        <div class="copy-row">
+            <input id="shareUrl" value="https://streamify.website/" readonly aria-label="Streamify website URL">
+            <button id="copyShare">Copy</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const SHARE_URL = "https://streamify.website/";
+const SHARE_TEXT = "Check out Streamify — a cinematic place to discover movies and series.";
+
+const nav = document.getElementById("nav");
+const modal = document.getElementById("shareModal");
+const shareUrl = document.getElementById("shareUrl");
+
+window.addEventListener("scroll", () => {
+    nav.classList.toggle("scrolled", window.scrollY > 30);
+}, {passive:true});
+
+function openShare(){
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+}
+function closeShare(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+}
+
+document.getElementById("navShare").addEventListener("click", openShare);
+document.getElementById("shareMain").addEventListener("click", openShare);
+document.getElementById("shareClose").addEventListener("click", closeShare);
+
+document.getElementById("footerShare").addEventListener("click", (e) => {
+    e.preventDefault();
+    openShare();
+});
+
+modal.addEventListener("click", (e) => {
+    if(e.target === modal) closeShare();
+});
+
+document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") closeShare();
+});
+
+document.querySelectorAll(".share-option").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const type = btn.dataset.share;
+
+        if(type === "whatsapp"){
+            window.open(
+                "https://wa.me/?text=" + encodeURIComponent(SHARE_TEXT + " " + SHARE_URL),
+                "_blank",
+                "noopener"
+            );
+            return;
+        }
+
+        if(type === "telegram"){
+            window.open(
+                "https://t.me/share/url?url=" + encodeURIComponent(SHARE_URL) +
+                "&text=" + encodeURIComponent(SHARE_TEXT),
+                "_blank",
+                "noopener"
+            );
+            return;
+        }
+
+        if(navigator.share){
+            try{
+                await navigator.share({
+                    title:"Streamify",
+                    text:SHARE_TEXT,
+                    url:SHARE_URL
+                });
+            }catch(_){}
+        }else{
+            copyShare();
+        }
+    });
+});
+
+function copyShare(){
+    navigator.clipboard?.writeText(SHARE_URL).then(() => {
+        const btn = document.getElementById("copyShare");
+        const old = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = old, 1400);
+    }).catch(() => {
+        shareUrl.select();
+        document.execCommand("copy");
+    });
+}
+
+document.getElementById("copyShare").addEventListener("click", copyShare);
+</script>
+
+</body>
+</html>
